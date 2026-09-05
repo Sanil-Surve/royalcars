@@ -31,6 +31,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { TooltipProvider } from "@/components/ui/tooltip";
+
 export default function RootLayout({
   children,
 }: {
@@ -43,11 +45,13 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#060E1A] text-slate-100">
         <AuthProvider>
-          <Toaster richColors position="top-right" theme="dark" closeButton />
-          <Navbar />
-          <main className="flex-1 flex flex-col">{children}</main>
-          <Footer />
-          <ConciergeModal />
+          <TooltipProvider>
+            <Toaster richColors position="top-right" theme="dark" closeButton />
+            <Navbar />
+            <main className="flex-1 flex flex-col">{children}</main>
+            <Footer />
+            <ConciergeModal />
+          </TooltipProvider>
         </AuthProvider>
       </body>
     </html>

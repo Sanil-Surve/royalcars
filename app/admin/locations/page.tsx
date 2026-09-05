@@ -6,6 +6,18 @@ import { Location } from "@/src/types";
 import { formatApiError } from "@/src/lib/utils";
 import { toast } from "sonner";
 import { MapPin, Plus, Edit2, Trash2, CheckCircle2, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function AdminLocationsPage() {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -94,12 +106,12 @@ export default function AdminLocationsPage() {
           </p>
         </div>
 
-        <button
+        <Button
           onClick={openAddModal}
-          className="px-4 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow"
+          className="bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow"
         >
           <Plus className="w-4 h-4" /> Add Hub Location
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -113,15 +125,16 @@ export default function AdminLocationsPage() {
                 <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 text-[#D4AF37] flex items-center justify-center">
                   <MapPin className="w-5 h-5" />
                 </div>
-                <span
-                  className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase ${
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] font-bold px-2.5 py-0.5 uppercase ${
                     loc.is_active
-                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                      : "bg-slate-800 text-slate-500"
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                      : "bg-slate-800 text-slate-500 border-slate-700"
                   }`}
                 >
                   {loc.is_active ? "Active Hub" : "Inactive"}
-                </span>
+                </Badge>
               </div>
 
               <h3 className="font-heading text-lg font-bold text-white pt-1">{loc.name}</h3>
@@ -129,90 +142,94 @@ export default function AdminLocationsPage() {
             </div>
 
             <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
-              <button
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => openEditModal(loc)}
-                className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-300 hover:text-white flex items-center gap-1"
+                className="border-slate-700 bg-slate-900 text-xs text-slate-300 hover:text-white flex items-center gap-1"
               >
                 <Edit2 className="w-3.5 h-3.5" /> Edit
-              </button>
-              <button
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => handleDelete(loc.id)}
-                className="px-3 py-1.5 rounded-lg bg-rose-950/40 border border-rose-900/50 text-xs text-rose-400 hover:bg-rose-900/60 flex items-center gap-1"
+                className="border-rose-900/50 bg-rose-950/40 text-xs text-rose-400 hover:bg-rose-900/60 flex items-center gap-1"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Deactivate
-              </button>
+              </Button>
             </div>
           </div>
         ))}
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-3xl bg-slate-950 border border-slate-700 p-6 space-y-4 text-slate-100 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-heading text-base font-bold text-white">
-                {editingLoc ? "Edit Hub Location" : "Add Hub Location"}
-              </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-xs text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
+      <Dialog open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
+        <DialogContent className="sm:max-w-md bg-[#0A192F] border-slate-700 text-slate-100 p-6 space-y-4 shadow-2xl">
+          <DialogHeader className="pb-3 border-b border-slate-800">
+            <DialogTitle className="font-heading text-base font-bold text-white">
+              {editingLoc ? "Edit Hub Location" : "Add Hub Location"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Fleet distribution point, mall concierge desk, or parking zone details.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSave} className="space-y-4 text-xs">
+            <div className="space-y-1.5">
+              <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Hub Display Name *</label>
+              <Input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Kharghar - Little World Mall"
+                className="bg-slate-900/90 border-slate-700 text-white"
+              />
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4 text-xs">
-              <div className="space-y-1.5">
-                <label className="font-bold uppercase text-slate-400">Hub Display Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Kharghar - Little World Mall"
-                  className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Complete Address & Landmark *</label>
+              <Textarea
+                rows={2}
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="e.g. Sector 2, Kharghar, Navi Mumbai"
+                className="bg-slate-900/90 border-slate-700 text-white text-xs"
+              />
+            </div>
 
-              <div className="space-y-1.5">
-                <label className="font-bold uppercase text-slate-400">Complete Address & Landmark *</label>
-                <textarea
-                  rows={2}
-                  required
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. Sector 2, Kharghar, Navi Mumbai"
-                  className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2 text-white"
-                />
+            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div>
+                <p className="font-semibold text-white text-xs">Active Dispatch Hub</p>
+                <p className="text-[11px] text-slate-400">Available for customer pickups and dropoffs</p>
               </div>
+              <Switch
+                checked={isActive}
+                onCheckedChange={(val) => setIsActive(val)}
+              />
+            </div>
 
-              <label className="flex items-center gap-2 cursor-pointer pt-1">
-                <input
-                  type="checkbox"
-                  checked={isActive}
-                  onChange={(e) => setIsActive(e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#D4AF37]"
-                />
-                <span className="font-semibold text-white">Hub is currently active for dispatches</span>
-              </label>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 font-bold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold uppercase tracking-wider"
-                >
-                  {submitting ? "Saving..." : "Save Hub"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-800">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsModalOpen(false)}
+                className="border-slate-700 text-slate-400 hover:bg-slate-800"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold uppercase tracking-wider"
+              >
+                {submitting ? "Saving..." : "Save Hub"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

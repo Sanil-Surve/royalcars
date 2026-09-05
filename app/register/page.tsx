@@ -7,6 +7,8 @@ import { motion } from "motion/react";
 import { useAuth } from "@/src/context/AuthContext";
 import { Crown, Lock, Mail, User, Phone, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -57,14 +59,14 @@ export default function RegisterPage() {
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Full Name</label>
             <div className="relative">
-              <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
+              <User className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Rohan Sharma"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+                className="pl-9 bg-slate-900/90 border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37]"
               />
             </div>
           </div>
@@ -72,14 +74,14 @@ export default function RegisterPage() {
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Email Address</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
+              <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="rohan@example.com"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+                className="pl-9 bg-slate-900/90 border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37]"
               />
             </div>
           </div>
@@ -87,14 +89,14 @@ export default function RegisterPage() {
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Phone Number</label>
             <div className="relative">
-              <Phone className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
+              <Phone className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Input
                 type="tel"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98200 XXXXX"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+                className="pl-9 bg-slate-900/90 border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37]"
               />
             </div>
           </div>
@@ -102,15 +104,15 @@ export default function RegisterPage() {
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Password</label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
+              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Input
                 type="password"
                 required
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min. 6 characters"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+                className="pl-9 bg-slate-900/90 border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37]"
               />
             </div>
           </div>
@@ -122,13 +124,13 @@ export default function RegisterPage() {
             </span>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-2 mt-4"
+            className="w-full h-11 bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-2 mt-4"
           >
             {submitting ? "Registering..." : "Create Account & Verify"} <ArrowRight className="w-4 h-4" />
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-400">

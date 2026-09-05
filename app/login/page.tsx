@@ -7,6 +7,9 @@ import { motion } from "motion/react";
 import { useAuth } from "@/src/context/AuthContext";
 import { Crown, Lock, Mail, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export default function LoginPage() {
   return (
@@ -81,24 +84,30 @@ function LoginContent() {
 
         {/* Quick Demo Switcher Buttons */}
         <div className="mb-6 p-3 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block text-center">
-            One-Click Quick Login
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
+          <div className="flex justify-center">
+            <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 border-slate-700 bg-slate-950/60">
+              One-Click Quick Login
+            </Badge>
+          </div>
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={fillAdmin}
-              className="py-2 px-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold hover:bg-amber-500/25 transition-colors"
+              className="bg-amber-500/15 border-amber-500/30 text-amber-300 text-xs font-bold hover:bg-amber-500/25"
             >
               Fleet Admin
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={fillCustomer}
-              className="py-2 px-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold hover:bg-slate-700 transition-colors"
+              className="bg-slate-800 border-slate-700 text-slate-200 text-xs font-bold hover:bg-slate-700"
             >
               Customer Demo
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -106,14 +115,14 @@ function LoginContent() {
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Email Address</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
+              <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+                className="pl-9 bg-slate-900/90 border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37]"
               />
             </div>
           </div>
@@ -123,25 +132,25 @@ function LoginContent() {
               <label className="font-bold uppercase tracking-wider text-slate-400">Password</label>
             </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
+              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+                className="pl-9 bg-slate-900/90 border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37]"
               />
             </div>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-2 mt-4"
+            className="w-full h-11 bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-2 mt-4"
           >
             {submitting ? "Signing In..." : "Sign In & Continue"} <ArrowRight className="w-4 h-4" />
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-400">

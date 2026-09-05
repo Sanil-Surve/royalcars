@@ -19,6 +19,18 @@ import {
   MapPin,
   RefreshCw,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function AdminVehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -182,12 +194,12 @@ export default function AdminVehiclesPage() {
           </p>
         </div>
 
-        <button
+        <Button
           onClick={openAddModal}
-          className="px-4 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow"
+          className="bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow"
         >
           <Plus className="w-4 h-4" /> Add Vehicle
-        </button>
+        </Button>
       </div>
 
       {/* Vehicle Grid Table */}
@@ -204,15 +216,22 @@ export default function AdminVehiclesPage() {
                 alt={v.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-[#0A192F]/80 text-[10px] font-bold text-[#D4AF37]">
-                {v.type}
+              <div className="absolute top-3 left-3">
+                <Badge variant="outline" className="bg-[#0A192F]/80 text-[#D4AF37] border-[#D4AF37]/30 text-[10px] font-bold">
+                  {v.type}
+                </Badge>
               </div>
-              <div
-                className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                  v.is_available ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
-                }`}
-              >
-                {v.is_available ? "Available" : "Unavailable / In Ride"}
+              <div className="absolute top-3 right-3">
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] font-bold ${
+                    v.is_available
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                      : "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                  }`}
+                >
+                  {v.is_available ? "Available" : "In Ride / Maintenance"}
+                </Badge>
               </div>
             </div>
 
@@ -236,18 +255,22 @@ export default function AdminVehiclesPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
+                    size="icon"
+                    variant="outline"
                     onClick={() => openEditModal(v)}
-                    className="p-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                    className="h-8 w-8 rounded-xl bg-slate-900 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
                   >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="outline"
                     onClick={() => handleDelete(v.id)}
-                    className="p-2 rounded-xl bg-rose-950/40 border border-rose-900/50 text-rose-400 hover:bg-rose-900/60"
+                    className="h-8 w-8 rounded-xl bg-rose-950/40 border-rose-900/50 text-rose-400 hover:bg-rose-900/60"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -256,187 +279,187 @@ export default function AdminVehiclesPage() {
       </div>
 
       {/* Add / Edit Vehicle Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto">
-          <div className="w-full max-w-2xl rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-6 text-slate-100 shadow-2xl my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-heading text-xl font-bold text-white">
-                {editingVehicle ? "Edit Fleet Vehicle" : "Add New Vehicle"}
-              </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-xs text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
+      <Dialog open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
+        <DialogContent className="sm:max-w-2xl bg-[#0A192F] border-slate-700 text-slate-100 p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="pb-3 border-b border-slate-800">
+            <DialogTitle className="font-heading text-xl font-bold text-white">
+              {editingVehicle ? "Edit Fleet Vehicle" : "Add New Vehicle"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Configure vehicle specifications, hourly/24h rates, security deposits, and upload photos.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSave} className="space-y-4 text-xs pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Vehicle Name *</label>
+                <Input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Hyundai Creta SX (O)"
+                  className="bg-slate-900/90 border-slate-700 text-white"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Category / Body Type</label>
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full h-9 rounded-md bg-slate-900 border border-slate-700 px-3 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                >
+                  <option value="SUV">SUV</option>
+                  <option value="Sedan">Sedan</option>
+                  <option value="Hatchback">Hatchback</option>
+                  <option value="MPV">MPV</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Transmission</label>
+                <select
+                  value={transmission}
+                  onChange={(e) => setTransmission(e.target.value)}
+                  className="w-full h-9 rounded-md bg-slate-900 border border-slate-700 px-3 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                >
+                  <option value="Automatic">Automatic</option>
+                  <option value="Manual">Manual</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Fuel Type</label>
+                <select
+                  value={fuelType}
+                  onChange={(e) => setFuelType(e.target.value)}
+                  className="w-full h-9 rounded-md bg-slate-900 border border-slate-700 px-3 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                >
+                  <option value="Petrol">Petrol</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Electric">Electric</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Price Per 24h (₹) *</label>
+                <Input
+                  type="number"
+                  required
+                  min={500}
+                  value={price24}
+                  onChange={(e) => setPrice24(Number(e.target.value))}
+                  className="bg-slate-900/90 border-slate-700 text-white font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Refundable Deposit (₹) *</label>
+                <Input
+                  type="number"
+                  required
+                  min={0}
+                  value={deposit}
+                  onChange={(e) => setDeposit(Number(e.target.value))}
+                  className="bg-slate-900/90 border-slate-700 text-white font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Overtime Rate Per Hour (₹)</label>
+                <Input
+                  type="number"
+                  min={0}
+                  value={overtimeRate}
+                  onChange={(e) => setOvertimeRate(Number(e.target.value))}
+                  className="bg-slate-900/90 border-slate-700 text-white font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Default Hub Location</label>
+                <select
+                  value={locationId}
+                  onChange={(e) => setLocationId(e.target.value)}
+                  className="w-full h-9 rounded-md bg-slate-900 border border-slate-700 px-3 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                >
+                  {locations.map((l) => (
+                    <option key={l.id} value={l.id}>{l.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Vehicle Name *</label>
+            {/* Cloudinary Image Upload helper */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Vehicle Photos</label>
+                <label className="cursor-pointer text-[11px] font-bold text-[#D4AF37] hover:underline flex items-center gap-1">
+                  <UploadCloud className="w-3.5 h-3.5" />
+                  {uploadingImage ? "Uploading to Cloudinary..." : "Upload Photo File"}
                   <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Hyundai Creta SX (O)"
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    disabled={uploadingImage}
+                    className="hidden"
+                    onChange={handleImageUpload}
                   />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Category / Body Type</label>
-                  <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
-                  >
-                    <option value="SUV">SUV</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="Hatchback">Hatchback</option>
-                    <option value="MPV">MPV</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Transmission</label>
-                  <select
-                    value={transmission}
-                    onChange={(e) => setTransmission(e.target.value)}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
-                  >
-                    <option value="Automatic">Automatic</option>
-                    <option value="Manual">Manual</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Fuel Type</label>
-                  <select
-                    value={fuelType}
-                    onChange={(e) => setFuelType(e.target.value)}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
-                  >
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Electric">Electric</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Price Per 24h (₹) *</label>
-                  <input
-                    type="number"
-                    required
-                    min={500}
-                    value={price24}
-                    onChange={(e) => setPrice24(Number(e.target.value))}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white font-mono"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Refundable Deposit (₹) *</label>
-                  <input
-                    type="number"
-                    required
-                    min={0}
-                    value={deposit}
-                    onChange={(e) => setDeposit(Number(e.target.value))}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white font-mono"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Overtime Rate Per Hour (₹)</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={overtimeRate}
-                    onChange={(e) => setOvertimeRate(Number(e.target.value))}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white font-mono"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-bold uppercase text-slate-400">Default Hub Location</label>
-                  <select
-                    value={locationId}
-                    onChange={(e) => setLocationId(e.target.value)}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
-                  >
-                    {locations.map((l) => (
-                      <option key={l.id} value={l.id}>{l.name}</option>
-                    ))}
-                  </select>
-                </div>
+                </label>
               </div>
+              <Textarea
+                rows={2}
+                placeholder="Paste direct image URLs (one per line) or use the upload button above..."
+                value={imageUrlsText}
+                onChange={(e) => setImageUrlsText(e.target.value)}
+                className="bg-slate-900/90 border-slate-700 text-white font-mono text-xs"
+              />
+            </div>
 
-              {/* Cloudinary Image Upload helper */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="font-bold uppercase text-slate-400">Vehicle Photos</label>
-                  <label className="cursor-pointer text-[11px] font-bold text-[#D4AF37] hover:underline flex items-center gap-1">
-                    <UploadCloud className="w-3.5 h-3.5" />
-                    {uploadingImage ? "Uploading to Cloudinary..." : "Upload Photo File"}
-                    <input
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.webp"
-                      disabled={uploadingImage}
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
-                  </label>
-                </div>
-                <textarea
-                  rows={2}
-                  placeholder="Paste direct image URLs (one per line) or use the upload button above..."
-                  value={imageUrlsText}
-                  onChange={(e) => setImageUrlsText(e.target.value)}
-                  className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2 text-white font-mono"
-                />
+            <div className="space-y-1.5">
+              <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Description & Highlights</label>
+              <Textarea
+                rows={2}
+                placeholder="Key features, interior leather, sunroof, Bose sound, cruise control..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="bg-slate-900/90 border-slate-700 text-white text-xs"
+              />
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div>
+                <p className="font-semibold text-white text-xs">Active & Available for Booking</p>
+                <p className="text-[11px] text-slate-400">Make this car immediately discoverable to clients</p>
               </div>
+              <Switch
+                checked={isAvailable}
+                onCheckedChange={(val) => setIsAvailable(val)}
+              />
+            </div>
 
-              <div className="space-y-1.5">
-                <label className="font-bold uppercase text-slate-400">Description & Highlights</label>
-                <textarea
-                  rows={2}
-                  placeholder="Key features, interior leather, sunroof, Bose sound, cruise control..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2 text-white"
-                />
-              </div>
-
-              <label className="flex items-center gap-2 cursor-pointer pt-1">
-                <input
-                  type="checkbox"
-                  checked={isAvailable}
-                  onChange={(e) => setIsAvailable(e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#D4AF37]"
-                />
-                <span className="font-semibold text-white">Vehicle is active and available for booking</span>
-              </label>
-
-              <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-400 font-bold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold uppercase tracking-wider shadow"
-                >
-                  {submitting ? "Saving..." : "Save Vehicle"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsModalOpen(false)}
+                className="border-slate-700 text-slate-300 hover:bg-slate-800"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold uppercase tracking-wider"
+              >
+                {submitting ? "Saving..." : "Save Vehicle"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

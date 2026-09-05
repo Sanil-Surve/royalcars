@@ -22,6 +22,10 @@ import {
   ChevronLeft,
   Calendar,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/src/lib/utils";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -107,11 +111,15 @@ export default function VehicleDetailPage({ params }: PageProps) {
                 alt={vehicle.name}
                 className="w-full h-full object-cover transition-all duration-300"
               />
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#0A192F]/85 backdrop-blur-md border border-slate-700 text-xs font-bold text-[#D4AF37]">
-                {vehicle.type}
+              <div className="absolute top-4 left-4">
+                <Badge variant="outline" className="bg-[#0A192F]/85 backdrop-blur-md border-slate-700 text-xs font-bold text-[#D4AF37]">
+                  {vehicle.type}
+                </Badge>
               </div>
-              <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 text-xs font-bold text-emerald-400 flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Verified & Sanitized
+              <div className="absolute top-4 right-4">
+                <Badge variant="outline" className="bg-emerald-500/20 backdrop-blur-md border-emerald-500/30 text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Verified & Sanitized
+                </Badge>
               </div>
             </div>
 
@@ -203,9 +211,9 @@ export default function VehicleDetailPage({ params }: PageProps) {
                     {formatINR(breakdown.finalRent)}
                   </div>
                 </div>
-                <span className="text-xs px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-bold">
+                <Badge variant="outline" className="text-xs px-3 py-1 bg-[#D4AF37]/15 text-[#D4AF37] font-bold border-[#D4AF37]/30">
                   {breakdown.durationLabel}
-                </span>
+                </Badge>
               </div>
 
               {/* Tier Toggle Pills */}
@@ -239,31 +247,33 @@ export default function VehicleDetailPage({ params }: PageProps) {
 
               {/* Toggles: Doorstep & Business Mode */}
               <div className="space-y-3 pt-2">
-                <label className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800">
                   <div className="flex items-center gap-2.5">
                     <Truck className="w-4 h-4 text-[#D4AF37]" />
-                    <span className="text-xs font-bold text-white">Doorstep Delivery (+₹499)</span>
+                    <div>
+                      <p className="text-xs font-bold text-white">Doorstep Delivery (+₹499)</p>
+                      <p className="text-[10px] text-slate-400">Delivered right to your doorstep or airport</p>
+                    </div>
                   </div>
-                  <input
-                    type="checkbox"
+                  <Switch
                     checked={doorstepDelivery}
-                    onChange={(e) => setDoorstepDelivery(e.target.checked)}
-                    className="w-4 h-4 rounded accent-[#D4AF37]"
+                    onCheckedChange={(val) => setDoorstepDelivery(val)}
                   />
-                </label>
+                </div>
 
-                <label className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800">
                   <div className="flex items-center gap-2.5">
                     <Building2 className="w-4 h-4 text-amber-400" />
-                    <span className="text-xs font-bold text-white">Business Fleet / GST Invoice</span>
+                    <div>
+                      <p className="text-xs font-bold text-white">Business Fleet / GST Invoice</p>
+                      <p className="text-[10px] text-slate-400">18% ITC credit for SME corporate accounts</p>
+                    </div>
                   </div>
-                  <input
-                    type="checkbox"
+                  <Switch
                     checked={isBusiness}
-                    onChange={(e) => setIsBusiness(e.target.checked)}
-                    className="w-4 h-4 rounded accent-[#D4AF37]"
+                    onCheckedChange={(val) => setIsBusiness(val)}
                   />
-                </label>
+                </div>
               </div>
 
               {/* Price Breakdown Sheet */}
@@ -313,7 +323,10 @@ export default function VehicleDetailPage({ params }: PageProps) {
               {/* Direct Booking CTA */}
               <Link
                 href={`/book?vehicle=${vehicle.id}&tier=${selectedTier}${doorstepDelivery ? "&doorstep=1" : ""}${isBusiness ? "&business=1" : ""}`}
-                className="w-full inline-flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-sm uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/25 transition-all"
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "w-full h-12 bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-sm uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/25 flex items-center justify-center gap-2"
+                )}
               >
                 Proceed To Booking Wizard <ArrowRight className="w-4 h-4" />
               </Link>

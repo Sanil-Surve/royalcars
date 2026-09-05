@@ -22,6 +22,18 @@ import {
   Sparkles,
   RefreshCw,
 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function AdminDashboardPage() {
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null);
@@ -132,61 +144,71 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={loadData}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white"
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 border-slate-700 text-xs font-semibold text-slate-200 hover:text-white"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh Live Data
-        </button>
+        </Button>
       </div>
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-[#0A192F] border border-slate-800 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Total Revenue</span>
-            <DollarSign className="w-4 h-4 text-[#D4AF37]" />
-          </div>
-          <p className="font-heading text-2xl font-bold text-white">
-            {formatINR(metrics?.revenue || 0)}
-          </p>
-          <span className="text-[10px] text-slate-500">Collected via Razorpay & Hub</span>
-        </div>
+        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+          <CardContent className="p-0 space-y-2">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span>Total Revenue</span>
+              <DollarSign className="w-4 h-4 text-[#D4AF37]" />
+            </div>
+            <p className="font-heading text-2xl font-bold text-white">
+              {formatINR(metrics?.revenue || 0)}
+            </p>
+            <span className="text-[10px] text-slate-500">Collected via Razorpay & Hub</span>
+          </CardContent>
+        </Card>
 
-        <div className="p-5 rounded-2xl bg-[#0A192F] border border-slate-800 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Active Dispatches</span>
-            <Car className="w-4 h-4 text-emerald-400" />
-          </div>
-          <p className="font-heading text-2xl font-bold text-emerald-400">
-            {activeRides.length} <span className="text-xs text-slate-400 font-sans font-normal">on road</span>
-          </p>
-          <span className="text-[10px] text-slate-500">
-            {metrics?.fleet_utilization || 0}% Fleet Utilization
-          </span>
-        </div>
+        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+          <CardContent className="p-0 space-y-2">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span>Active Dispatches</span>
+              <Car className="w-4 h-4 text-emerald-400" />
+            </div>
+            <p className="font-heading text-2xl font-bold text-emerald-400">
+              {activeRides.length} <span className="text-xs text-slate-400 font-sans font-normal">on road</span>
+            </p>
+            <span className="text-[10px] text-slate-500">
+              {metrics?.fleet_utilization || 0}% Fleet Utilization
+            </span>
+          </CardContent>
+        </Card>
 
-        <div className="p-5 rounded-2xl bg-[#0A192F] border border-slate-800 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Pending KYC Queue</span>
-            <FileCheck className="w-4 h-4 text-amber-400" />
-          </div>
-          <p className="font-heading text-2xl font-bold text-amber-400">
-            {metrics?.pending_kyc || 0}
-          </p>
-          <span className="text-[10px] text-slate-500">Awaiting verification review</span>
-        </div>
+        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+          <CardContent className="p-0 space-y-2">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span>Pending KYC Queue</span>
+              <FileCheck className="w-4 h-4 text-amber-400" />
+            </div>
+            <p className="font-heading text-2xl font-bold text-amber-400">
+              {metrics?.pending_kyc || 0}
+            </p>
+            <span className="text-[10px] text-slate-500">Awaiting verification review</span>
+          </CardContent>
+        </Card>
 
-        <div className="p-5 rounded-2xl bg-[#0A192F] border border-slate-800 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Pending Balances</span>
-            <Clock className="w-4 h-4 text-cyan-400" />
-          </div>
-          <p className="font-heading text-2xl font-bold text-white">
-            {formatINR(metrics?.pending_balance || 0)}
-          </p>
-          <span className="text-[10px] text-slate-500">Collect at physical handover</span>
-        </div>
+        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+          <CardContent className="p-0 space-y-2">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span>Pending Balances</span>
+              <Clock className="w-4 h-4 text-cyan-400" />
+            </div>
+            <p className="font-heading text-2xl font-bold text-white">
+              {formatINR(metrics?.pending_balance || 0)}
+            </p>
+            <span className="text-[10px] text-slate-500">Collect at physical handover</span>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Confirmed Bookings Ready for Handover ("Start Ride" Flow) */}
@@ -218,9 +240,9 @@ export default function AdminDashboardPage() {
                       Customer: <span className="text-white font-medium">{b.customer_name || "Driver"}</span> ({b.customer_phone || "—"})
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15">
+                  <Badge variant="outline" className="text-xs font-bold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border-[#D4AF37]/30">
                     #{b.id.slice(0, 8)}
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
@@ -235,15 +257,16 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="pt-2 border-t border-slate-800 flex justify-end">
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() => {
                       setStartRideBooking(b);
                       setStartOdo(15000);
                     }}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow"
+                    className="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" /> Initiate Handover / Start Ride
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -280,9 +303,9 @@ export default function AdminDashboardPage() {
                       Driver: <span className="text-white font-medium">{b.customer_name || "Customer"}</span> ({b.customer_phone || "—"})
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 px-2.5 py-0.5 rounded-full bg-emerald-500/20">
+                  <Badge variant="secondary" className="text-xs font-bold text-emerald-400 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border-emerald-500/30">
                     Active
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-xs text-slate-300">
@@ -301,16 +324,17 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="pt-2 border-t border-slate-800 flex justify-end">
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() => {
                       setEndRideBooking(b);
                       setEndOdo((b.odometer_start || 15000) + 120);
                       setExtraCharges(0);
                     }}
-                    className="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs flex items-center gap-1.5 shadow"
+                    className="rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs flex items-center gap-1.5 shadow"
                   >
                     <Square className="w-3.5 h-3.5 fill-current" /> Process Return / End Ride
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -318,30 +342,27 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      {/* START RIDE MODAL */}
-      {startRideBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-          <div className="w-full max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-5 text-slate-100 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div>
-                <h3 className="font-heading text-lg font-bold text-white">Start Ride & Vehicle Handover</h3>
-                <p className="text-xs text-slate-400">{startRideBooking.vehicle_name} · #{startRideBooking.id.slice(0, 8)}</p>
-              </div>
-              <button onClick={() => setStartRideBooking(null)} className="text-xs text-slate-400 hover:text-white">
-                Cancel
-              </button>
-            </div>
+      {/* START RIDE MODAL with shadcn Dialog */}
+      <Dialog open={Boolean(startRideBooking)} onOpenChange={(open) => { if (!open) setStartRideBooking(null); }}>
+        {startRideBooking && (
+          <DialogContent className="max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
+            <DialogHeader className="pb-3 border-b border-slate-800 text-left">
+              <DialogTitle className="font-heading text-lg font-bold text-white">Start Ride & Vehicle Handover</DialogTitle>
+              <DialogDescription className="text-xs text-slate-400">
+                {startRideBooking.vehicle_name} · #{startRideBooking.id.slice(0, 8)}
+              </DialogDescription>
+            </DialogHeader>
 
             <form onSubmit={handleStartRide} className="space-y-4 text-xs">
               <div className="space-y-1.5">
                 <label className="font-bold uppercase text-slate-400">Starting Odometer Reading (km) *</label>
-                <input
+                <Input
                   type="number"
                   required
                   min={0}
                   value={startOdo}
                   onChange={(e) => setStartOdo(Number(e.target.value))}
-                  className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-sm text-white font-mono"
+                  className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-sm text-white font-mono"
                 />
               </div>
 
@@ -361,70 +382,70 @@ export default function AdminDashboardPage() {
 
               <div className="space-y-1.5">
                 <label className="font-bold uppercase text-slate-400">Inspection Photo URLs (One per line)</label>
-                <textarea
+                <Textarea
                   rows={2}
                   placeholder="https://... photo1&#10;https://... photo2"
                   value={startPhotos}
                   onChange={(e) => setStartPhotos(e.target.value)}
-                  className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2 text-xs text-white font-mono"
+                  className="w-full rounded-xl bg-slate-900 border-slate-700 p-2 text-xs text-white font-mono"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="font-bold uppercase text-slate-400">Handover Notes</label>
-                <input
+                <Input
                   type="text"
                   value={startNotes}
                   onChange={(e) => setStartNotes(e.target.value)}
-                  className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                  className="w-full h-10 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                 />
               </div>
 
               <div className="pt-2 flex justify-end gap-2">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setStartRideBooking(null)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-400 font-bold"
+                  className="rounded-xl bg-slate-900 text-slate-400 font-bold border-slate-700"
                 >
                   Close
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
+                  size="sm"
                   disabled={submittingStart}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase tracking-wider shadow"
+                  className="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase tracking-wider shadow"
                 >
                   {submittingStart ? "Starting..." : "Confirm & Start Ride"}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
 
-      {/* END RIDE MODAL */}
-      {endRideBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-          <div className="w-full max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-5 text-slate-100 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div>
-                <h3 className="font-heading text-lg font-bold text-white">Process Return & End Ride</h3>
-                <p className="text-xs text-slate-400">{endRideBooking.vehicle_name} · Start: {endRideBooking.odometer_start || 0} km</p>
-              </div>
-              <button onClick={() => setEndRideBooking(null)} className="text-xs text-slate-400 hover:text-white">
-                Cancel
-              </button>
-            </div>
+      {/* END RIDE MODAL with shadcn Dialog */}
+      <Dialog open={Boolean(endRideBooking)} onOpenChange={(open) => { if (!open) setEndRideBooking(null); }}>
+        {endRideBooking && (
+          <DialogContent className="max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
+            <DialogHeader className="pb-3 border-b border-slate-800 text-left">
+              <DialogTitle className="font-heading text-lg font-bold text-white">Process Return & End Ride</DialogTitle>
+              <DialogDescription className="text-xs text-slate-400">
+                {endRideBooking.vehicle_name} · Start: {endRideBooking.odometer_start || 0} km
+              </DialogDescription>
+            </DialogHeader>
 
             <form onSubmit={handleEndRide} className="space-y-4 text-xs">
               <div className="space-y-1.5">
                 <label className="font-bold uppercase text-slate-400">Ending Odometer Reading (km) *</label>
-                <input
+                <Input
                   type="number"
                   required
                   min={endRideBooking.odometer_start || 0}
                   value={endOdo}
                   onChange={(e) => setEndOdo(Number(e.target.value))}
-                  className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-sm text-white font-mono"
+                  className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-sm text-white font-mono"
                 />
                 <span className="text-[10px] text-slate-400">
                   Total distance driven: <span className="font-bold text-[#D4AF37]">{Math.max(0, endOdo - (endRideBooking.odometer_start || 0))} km</span>
@@ -448,57 +469,60 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="font-bold uppercase text-slate-400">Extra Charges (₹)</label>
-                  <input
+                  <Input
                     type="number"
                     min={0}
                     value={extraCharges}
                     onChange={(e) => setExtraCharges(Number(e.target.value))}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                    className="w-full h-10 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                   />
                 </div>
                 <div className="space-y-1">
                   <label className="font-bold uppercase text-slate-400">Reason (if any)</label>
-                  <input
+                  <Input
                     type="text"
                     placeholder="e.g. Deep dry cleaning"
                     value={extraReason}
                     onChange={(e) => setExtraReason(e.target.value)}
-                    className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                    className="w-full h-10 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="font-bold uppercase text-slate-400">Return Inspection Photos (One per line)</label>
-                <textarea
+                <Textarea
                   rows={2}
                   placeholder="https://... photo1&#10;https://... photo2"
                   value={endPhotos}
                   onChange={(e) => setEndPhotos(e.target.value)}
-                  className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2 text-xs text-white font-mono"
+                  className="w-full rounded-xl bg-slate-900 border-slate-700 p-2 text-xs text-white font-mono"
                 />
               </div>
 
               <div className="pt-2 flex justify-end gap-2">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setEndRideBooking(null)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-400 font-bold"
+                  className="rounded-xl bg-slate-900 text-slate-400 font-bold border-slate-700"
                 >
                   Close
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
+                  size="sm"
                   disabled={submittingEnd}
-                  className="px-6 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold uppercase tracking-wider shadow"
+                  className="rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold uppercase tracking-wider shadow"
                 >
                   {submittingEnd ? "Processing..." : "Complete & Close Ride"}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
     </div>
   );
 }

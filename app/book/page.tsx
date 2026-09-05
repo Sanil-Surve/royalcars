@@ -28,6 +28,11 @@ import {
   Sparkles,
   QrCode,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 
 export default function BookingWizardPage() {
   return (
@@ -407,31 +412,34 @@ function BookingWizardContent() {
                   <label className="text-xs font-bold uppercase text-slate-400">
                     Doorstep Delivery Address in Navi Mumbai
                   </label>
-                  <textarea
+                  <Textarea
                     rows={3}
                     placeholder="Enter building name, flat number, street and landmark (Kharghar, Panvel, Vashi, Belapur, Seawoods)..."
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
-                    className="w-full rounded-xl bg-slate-900 border border-slate-700 p-3 text-xs text-white placeholder:text-slate-500"
+                    className="w-full rounded-xl bg-slate-900 border-slate-700 p-3 text-xs text-white placeholder:text-slate-500"
                   />
                 </div>
               )}
 
               <div className="pt-4 flex justify-between items-center">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setStep(1)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-900 text-slate-300 text-xs font-bold uppercase flex items-center gap-1.5"
+                  className="rounded-xl bg-slate-900 text-slate-300 text-xs font-bold uppercase border-slate-700"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Back
-                </button>
-                <button
+                  <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                </Button>
+                <Button
                   type="button"
+                  size="sm"
                   onClick={() => setStep(3)}
-                  className="px-6 py-3 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-amber-400 shadow"
+                  className="rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:bg-amber-400 shadow"
                 >
-                  Continue To Add-ons & GST <ArrowRight className="w-4 h-4" />
-                </button>
+                  Continue To Add-ons & GST <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
               </div>
             </div>
           )}
@@ -448,7 +456,10 @@ function BookingWizardContent() {
 
               {/* Business Fleet Toggle */}
               <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-                <label className="flex items-center justify-between cursor-pointer">
+                <div
+                  onClick={() => setIsBusiness(!isBusiness)}
+                  className="flex items-center justify-between cursor-pointer select-none"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
                       <Building2 className="w-5 h-5" />
@@ -458,35 +469,33 @@ function BookingWizardContent() {
                       <p className="text-xs text-slate-400">Generate 18% GST invoice with input tax credit (ITC)</p>
                     </div>
                   </div>
-                  <input
-                    type="checkbox"
+                  <Switch
                     checked={isBusiness}
-                    onChange={(e) => setIsBusiness(e.target.checked)}
-                    className="w-5 h-5 rounded accent-[#D4AF37]"
+                    onCheckedChange={(checked) => setIsBusiness(Boolean(checked))}
                   />
-                </label>
+                </div>
 
                 {isBusiness && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-800">
                     <div className="space-y-1">
                       <label className="text-[11px] font-bold uppercase text-slate-400">Registered Company Name</label>
-                      <input
+                      <Input
                         type="text"
                         placeholder="e.g. Acme Technologies Pvt Ltd"
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
-                        className="w-full h-10 rounded-xl bg-slate-950 border border-slate-700 px-3 text-xs text-white"
+                        className="w-full h-10 rounded-xl bg-slate-950 border-slate-700 px-3 text-xs text-white"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[11px] font-bold uppercase text-slate-400">GSTIN Number (15-digit)</label>
-                      <input
+                      <Input
                         type="text"
                         placeholder="e.g. 27AABCR9821Q1Z4"
                         value={gstin}
                         onChange={(e) => setGstin(e.target.value.toUpperCase())}
                         maxLength={15}
-                        className="w-full h-10 rounded-xl bg-slate-950 border border-slate-700 px-3 text-xs text-white font-mono"
+                        className="w-full h-10 rounded-xl bg-slate-950 border-slate-700 px-3 text-xs text-white font-mono"
                       />
                     </div>
                   </div>

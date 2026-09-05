@@ -15,6 +15,17 @@ import {
   User as UserIcon,
   RefreshCw,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { motion } from "motion/react";
 
 interface KYCQueueItem {
   user: User;
@@ -80,12 +91,14 @@ export default function AdminKYCPage() {
           </p>
         </div>
 
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={loadQueue}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white"
+          className="border-slate-700 bg-slate-900 text-xs font-semibold text-slate-200 hover:text-white"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh Queue
-        </button>
+          <RefreshCw className={`w-3.5 h-3.5 mr-2 ${loading ? "animate-spin" : ""}`} /> Refresh Queue
+        </Button>
       </div>
 
       {queue.length === 0 ? (
@@ -112,9 +125,9 @@ export default function AdminKYCPage() {
                   </div>
                 </div>
 
-                <span className="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <Badge variant="outline" className="text-xs font-bold px-3 py-1 uppercase tracking-wider bg-amber-500/20 text-amber-400 border-amber-500/30">
                   Status: {user.kyc_status}
-                </span>
+                </Badge>
               </div>
 
               {/* Uploaded Documents List */}
@@ -127,17 +140,18 @@ export default function AdminKYCPage() {
                     <div>
                       <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
                         <span className="capitalize">{doc.document_type.replace("_", " ")}</span>
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] font-bold uppercase ${
                             doc.verification_status === "approved"
-                              ? "bg-emerald-500/20 text-emerald-400"
+                              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                               : doc.verification_status === "rejected"
-                              ? "bg-rose-500/20 text-rose-400"
-                              : "bg-amber-500/20 text-amber-400"
+                              ? "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                              : "bg-amber-500/20 text-amber-400 border-amber-500/30"
                           }`}
                         >
                           {doc.verification_status}
-                        </span>
+                        </Badge>
                       </div>
                       {doc.admin_notes && (
                         <p className="text-[10px] text-amber-300 mt-1 italic">&ldquo;{doc.admin_notes}&rdquo;</p>
@@ -145,34 +159,39 @@ export default function AdminKYCPage() {
                     </div>
 
                     <div className="space-y-2 pt-2 border-t border-slate-800">
-                      <button
+                      <Button
+                        size="sm"
+                        variant="secondary"
                         onClick={() => setSelectedPreviewDoc(doc)}
-                        className="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center justify-center gap-1.5"
+                        className="w-full h-8 text-xs font-medium flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200"
                       >
                         <Eye className="w-3.5 h-3.5 text-[#D4AF37]" /> Inspect Document
-                      </button>
+                      </Button>
 
                       <div className="grid grid-cols-2 gap-1.5">
-                        <button
+                        <Button
+                          size="xs"
                           onClick={() => {
                             setReviewingDoc(doc);
                             setReviewStatus("approved");
                             setAdminNotes("Approved. Clear and valid.");
                           }}
-                          className="py-1.5 rounded-lg bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1"
+                          className="bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold"
                         >
-                          <Check className="w-3.5 h-3.5" /> Approve
-                        </button>
-                        <button
+                          <Check className="w-3 h-3 mr-1" /> Approve
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="destructive"
                           onClick={() => {
                             setReviewingDoc(doc);
                             setReviewStatus("rejected");
                             setAdminNotes("Unclear image or expired license.");
                           }}
-                          className="py-1.5 rounded-lg bg-rose-600/80 hover:bg-rose-500 text-white text-xs font-bold flex items-center justify-center gap-1"
+                          className="bg-rose-600/90 hover:bg-rose-500 text-white font-bold"
                         >
-                          <X className="w-3.5 h-3.5" /> Reject
-                        </button>
+                          <X className="w-3 h-3 mr-1" /> Reject
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -184,95 +203,102 @@ export default function AdminKYCPage() {
       )}
 
       {/* Review Modal */}
-      {reviewingDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-3xl bg-slate-950 border border-slate-700 p-6 space-y-4 text-slate-100 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-heading text-base font-bold text-white">
+      <Dialog open={Boolean(reviewingDoc)} onOpenChange={(open) => !open && setReviewingDoc(null)}>
+        {reviewingDoc && (
+          <DialogContent className="sm:max-w-md bg-[#0A192F] border-slate-700 text-slate-100 p-6 space-y-4 shadow-2xl">
+            <DialogHeader className="pb-3 border-b border-slate-800">
+              <DialogTitle className="font-heading text-base font-bold text-white">
                 Verify {reviewingDoc.document_type.replace("_", " ").toUpperCase()}
-              </h3>
-              <button onClick={() => setReviewingDoc(null)} className="text-xs text-slate-400 hover:text-white">
-                Cancel
-              </button>
-            </div>
+              </DialogTitle>
+              <DialogDescription className="text-xs text-slate-400">
+                Set approval status and enter verification remarks visible to the customer.
+              </DialogDescription>
+            </DialogHeader>
 
             <form onSubmit={handleVerifySubmit} className="space-y-4 text-xs">
               <div className="space-y-1.5">
-                <label className="font-bold uppercase text-slate-400">Action Decision</label>
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Action Decision</label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
+                  <Button
                     type="button"
+                    variant={reviewStatus === "approved" ? "default" : "outline"}
                     onClick={() => setReviewStatus("approved")}
-                    className={`py-2 rounded-xl font-bold uppercase transition-colors ${
+                    className={`font-bold uppercase ${
                       reviewStatus === "approved"
-                        ? "bg-emerald-600 text-white shadow"
-                        : "bg-slate-900 text-slate-400"
+                        ? "bg-emerald-600 hover:bg-emerald-500 text-white"
+                        : "border-slate-700 text-slate-400 hover:bg-slate-800"
                     }`}
                   >
                     Approve
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant={reviewStatus === "rejected" ? "default" : "outline"}
                     onClick={() => setReviewStatus("rejected")}
-                    className={`py-2 rounded-xl font-bold uppercase transition-colors ${
+                    className={`font-bold uppercase ${
                       reviewStatus === "rejected"
-                        ? "bg-rose-600 text-white shadow"
-                        : "bg-slate-900 text-slate-400"
+                        ? "bg-rose-600 hover:bg-rose-500 text-white"
+                        : "border-slate-700 text-slate-400 hover:bg-slate-800"
                     }`}
                   >
                     Reject
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="font-bold uppercase text-slate-400">Reviewer Notes (Shown to customer)</label>
-                <input
+                <label className="font-bold uppercase tracking-wider text-[10px] text-slate-400">Reviewer Notes (Shown to customer)</label>
+                <Input
                   type="text"
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
                   placeholder="e.g. Approved or Please re-upload without flash reflection"
-                  className="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 px-3 text-white"
+                  className="bg-slate-900/90 border-slate-700 text-white"
                 />
               </div>
 
-              <div className="pt-2 flex justify-end gap-2">
-                <button
+              <div className="pt-2 flex justify-end gap-2 border-t border-slate-800">
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => setReviewingDoc(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 font-bold"
+                  className="border-slate-700 text-slate-400 hover:bg-slate-800"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold uppercase tracking-wider"
+                  className="bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold uppercase tracking-wider"
                 >
                   {submitting ? "Saving..." : "Submit Verification"}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
 
       {/* Document Image Zoom Preview Modal */}
-      {selectedPreviewDoc && (
-        <div
-          onClick={() => setSelectedPreviewDoc(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md cursor-zoom-out"
-        >
-          <div className="max-w-3xl max-h-[85vh] overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 p-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={selectedPreviewDoc.file_url}
-              alt="Document Preview"
-              className="max-h-[80vh] w-auto object-contain mx-auto rounded-lg"
-            />
-          </div>
-        </div>
-      )}
+      <Dialog open={Boolean(selectedPreviewDoc)} onOpenChange={(open) => !open && setSelectedPreviewDoc(null)}>
+        {selectedPreviewDoc && (
+          <DialogContent className="sm:max-w-3xl bg-slate-950 border-slate-700 p-3 shadow-2xl">
+            <DialogHeader className="p-2 border-b border-slate-800">
+              <DialogTitle className="text-xs uppercase font-bold text-slate-300">
+                Document Inspection · {selectedPreviewDoc.document_type.replace("_", " ").toUpperCase()}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex justify-center p-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={selectedPreviewDoc.file_url}
+                alt="Document Preview"
+                className="max-h-[75vh] w-auto object-contain rounded-lg shadow-inner"
+              />
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
     </div>
   );
 }

@@ -20,6 +20,9 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -108,28 +111,33 @@ function AdminShell({ children }: { children: React.ReactNode }) {
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-800 space-y-3">
           <div className="flex items-center gap-2.5 px-2">
-            <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center">
-              A
-            </div>
+            <Avatar className="w-8 h-8 rounded-full border border-amber-500/40">
+              <AvatarFallback className="bg-amber-500/20 text-amber-300 text-xs font-bold">
+                {user?.name ? user.name.slice(0, 1).toUpperCase() : "A"}
+              </AvatarFallback>
+            </Avatar>
             <div className="text-xs truncate">
               <p className="font-semibold text-white truncate">{user?.email}</p>
-              <p className="text-[10px] text-emerald-400">Master Administrator</p>
+              <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold py-0 h-4 border-emerald-500/30">
+                Master Admin
+              </Badge>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 pt-1">
-            <Link
-              href="/"
-              className="text-center py-2 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-slate-300 hover:text-white"
-            >
-              Public App
+            <Link href="/">
+              <Button variant="outline" size="sm" className="w-full text-center py-2 h-9 rounded-xl bg-slate-900 border-slate-800 text-[11px] font-semibold text-slate-300 hover:text-white">
+                Public App
+              </Button>
             </Link>
-            <button
+            <Button
+              variant="destructive"
+              size="sm"
               onClick={() => logout()}
-              className="text-center py-2 rounded-lg bg-rose-950/30 border border-rose-900/40 text-[11px] font-semibold text-rose-300 hover:bg-rose-950/50"
+              className="w-full text-center py-2 h-9 rounded-xl bg-rose-950/30 border border-rose-900/40 text-[11px] font-semibold text-rose-300 hover:bg-rose-950/50"
             >
               Sign Out
-            </button>
+            </Button>
           </div>
         </div>
       </aside>

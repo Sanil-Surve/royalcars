@@ -19,6 +19,10 @@ import {
   Trash2,
   Sparkles,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/src/lib/utils";
+import { motion } from "motion/react";
 
 const REQUIRED_DOCS: { type: KYCDocumentType; title: string; desc: string; required: boolean }[] = [
   { type: "dl_front", title: "Driving License (Front)", desc: "Clear color photo showing photo & DL number", required: true },
@@ -136,17 +140,18 @@ function KYCContent() {
               </div>
             </div>
 
-            <span
-              className={`text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${
+            <Badge
+              variant="outline"
+              className={`text-xs font-bold px-3 py-1.5 uppercase tracking-wider ${
                 user?.kyc_status === "approved"
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
                   : user?.kyc_status === "rejected"
-                  ? "bg-rose-500/20 text-rose-400 border border-rose-500/40"
-                  : "bg-amber-500/20 text-amber-400 border border-amber-500/40"
+                  ? "bg-rose-500/20 text-rose-400 border-rose-500/40"
+                  : "bg-amber-500/20 text-amber-400 border-amber-500/40"
               }`}
             >
               {user?.kyc_status || "Incomplete"}
-            </span>
+            </Badge>
           </div>
         </div>
 
@@ -183,19 +188,22 @@ function KYCContent() {
                       </span>
 
                       {existing ? (
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] font-bold px-2 py-0.5 uppercase ${
                             existing.verification_status === "approved"
-                              ? "bg-emerald-500/20 text-emerald-400"
+                              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                               : existing.verification_status === "rejected"
-                              ? "bg-rose-500/20 text-rose-400"
-                              : "bg-amber-500/20 text-amber-400"
+                              ? "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                              : "bg-amber-500/20 text-amber-400 border-amber-500/30"
                           }`}
                         >
                           {existing.verification_status}
-                        </span>
+                        </Badge>
                       ) : (
-                        <span className="text-[10px] text-slate-500 uppercase font-semibold">Pending</span>
+                        <Badge variant="outline" className="text-[10px] text-slate-500 uppercase font-semibold border-slate-700 bg-slate-950/50">
+                          Pending
+                        </Badge>
                       )}
                     </div>
 
@@ -215,13 +223,16 @@ function KYCContent() {
                           href={existing.file_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors"
+                          className={cn(
+                            buttonVariants({ size: "sm", variant: "secondary" }),
+                            "h-8 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium inline-flex items-center gap-1.5"
+                          )}
                         >
                           <Eye className="w-3.5 h-3.5 text-[#D4AF37]" /> View File
                         </a>
 
                         {existing.verification_status !== "approved" && (
-                          <label className="cursor-pointer px-3 py-2 rounded-xl bg-[#D4AF37] text-[#0A192F] text-xs font-bold uppercase tracking-wider hover:bg-amber-400 transition-colors">
+                          <label className="cursor-pointer px-3 py-1.5 rounded-md bg-[#D4AF37] text-[#0A192F] text-xs font-bold uppercase tracking-wider hover:bg-amber-400 transition-colors inline-flex items-center">
                             {isUploading ? "Uploading..." : "Replace"}
                             <input
                               type="file"

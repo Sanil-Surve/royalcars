@@ -19,6 +19,9 @@ import {
 } from "lucide-react";
 import { formatINR } from "@/src/lib/utils";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function BusinessFleetPage() {
   const [companyName, setCompanyName] = useState("");
@@ -54,9 +57,12 @@ export default function BusinessFleetPage() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-3xl space-y-5 relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-bold text-amber-400 uppercase tracking-widest">
+            <Badge
+              variant="outline"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/15 border-amber-500/30 text-xs font-bold text-amber-400 uppercase tracking-widest"
+            >
               <Building2 className="w-4 h-4" /> SME Fleet & Enterprise Mode
-            </div>
+            </Badge>
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
               Smarter Mobility for Growing Businesses
             </h1>
@@ -66,17 +72,15 @@ export default function BusinessFleetPage() {
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-4">
-              <a
-                href="#inquiry"
-                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/25 transition-all"
-              >
-                Request Corporate Account Quote &rarr;
+              <a href="#inquiry">
+                <Button className="h-12 px-6 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/25">
+                  Request Corporate Account Quote &rarr;
+                </Button>
               </a>
-              <Link
-                href="/vehicles?business=1"
-                className="px-6 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors"
-              >
-                Book with Instant GST Billing
+              <Link href="/vehicles?business=1">
+                <Button variant="outline" className="h-12 px-6 rounded-xl bg-slate-900 border-slate-700 text-white text-xs font-bold uppercase tracking-wider hover:bg-slate-800">
+                  Book with Instant GST Billing
+                </Button>
               </Link>
             </div>
           </div>
@@ -206,61 +210,61 @@ export default function BusinessFleetPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase text-slate-400">Company Legal Name *</label>
-                    <input
+                    <Input
                       type="text"
                       required
                       placeholder="e.g. Apex Logix Private Limited"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                      className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase text-slate-400">GSTIN Number (Optional)</label>
-                    <input
+                    <Input
                       type="text"
                       placeholder="e.g. 27AAAAA0000A1Z5"
                       value={gstin}
                       onChange={(e) => setGstin(e.target.value.toUpperCase())}
                       maxLength={15}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white font-mono"
+                      className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white font-mono"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase text-slate-400">Contact Person *</label>
-                    <input
+                    <Input
                       type="text"
                       required
                       placeholder="Full Name"
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                      className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase text-slate-400">Official Phone Number *</label>
-                    <input
+                    <Input
                       type="tel"
                       required
                       placeholder="+91 98200 XXXXX"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                      className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase text-slate-400">Work Email *</label>
-                    <input
+                    <Input
                       type="email"
                       required
                       placeholder="fleet@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                      className="w-full h-11 rounded-xl bg-slate-900 border-slate-700 px-3 text-xs text-white"
                     />
                   </div>
 
@@ -280,12 +284,12 @@ export default function BusinessFleetPage() {
                 </div>
 
                 <div className="pt-2">
-                  <button
+                  <Button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all"
+                    className="w-full h-12 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20"
                   >
                     Submit Corporate Request &rarr;
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}

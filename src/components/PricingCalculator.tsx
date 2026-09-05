@@ -6,6 +6,9 @@ import { PricingTier, Vehicle } from "@/src/types";
 import { computePricing, formatINR } from "@/src/lib/utils";
 import { Check, Sparkles, Building2, Truck, ShieldCheck, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 interface PricingCalculatorProps {
   vehicles?: Vehicle[];
@@ -56,9 +59,12 @@ export default function PricingCalculator({ vehicles = [], defaultVehicle }: Pri
     <div className="w-full rounded-3xl bg-gradient-to-b from-[#0A192F] via-[#0d1e38] to-[#0A192F] border border-[#D4AF37]/30 p-6 sm:p-8 lg:p-10 shadow-2xl text-slate-100">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-slate-800">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-xs font-semibold text-[#D4AF37] uppercase tracking-wider mb-2">
+          <Badge
+            variant="outline"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/15 border-[#D4AF37]/30 text-xs font-semibold text-[#D4AF37] uppercase tracking-wider mb-2"
+          >
             <Sparkles className="w-3.5 h-3.5" /> Transparent Flexible Pricing
-          </div>
+          </Badge>
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-white tracking-tight">
             Hourly, Daily or Monthly Subscriptions
           </h2>
@@ -103,13 +109,13 @@ export default function PricingCalculator({ vehicles = [], defaultVehicle }: Pri
               }`}
             >
               {t.badge && (
-                <span
+                <Badge
                   className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${
                     isSelected ? "bg-[#0A192F] text-[#D4AF37]" : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                   }`}
                 >
                   {t.badge}
-                </span>
+                </Badge>
               )}
               <span className={`text-xs font-bold ${isSelected ? "text-[#0A192F]" : "text-white"}`}>{t.label}</span>
               <span className={`text-[10px] mt-0.5 ${isSelected ? "text-slate-900/80 font-medium" : "text-slate-400"}`}>
@@ -120,10 +126,13 @@ export default function PricingCalculator({ vehicles = [], defaultVehicle }: Pri
         })}
       </div>
 
-      {/* Options: Doorstep Delivery & SME Business Mode */}
+      {/* Options: Doorstep Delivery & SME Business Mode with shadcn Switch */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Doorstep Delivery Toggle */}
-        <label className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors">
+        <div
+          onClick={() => setDoorstepDelivery(!doorstepDelivery)}
+          className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors select-none"
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-[#D4AF37]">
               <Truck className="w-5 h-5" />
@@ -133,16 +142,17 @@ export default function PricingCalculator({ vehicles = [], defaultVehicle }: Pri
               <p className="text-xs text-slate-400">Delivered right to your doorstep (+₹499)</p>
             </div>
           </div>
-          <input
-            type="checkbox"
+          <Switch
             checked={doorstepDelivery}
-            onChange={(e) => setDoorstepDelivery(e.target.checked)}
-            className="w-5 h-5 rounded border-slate-700 text-[#D4AF37] focus:ring-0 focus:ring-offset-0 bg-slate-950 accent-[#D4AF37]"
+            onCheckedChange={(checked) => setDoorstepDelivery(Boolean(checked))}
           />
-        </label>
+        </div>
 
         {/* Business Fleet GST Toggle */}
-        <label className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors">
+        <div
+          onClick={() => setIsBusiness(!isBusiness)}
+          className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors select-none"
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-amber-400">
               <Building2 className="w-5 h-5" />
@@ -152,13 +162,11 @@ export default function PricingCalculator({ vehicles = [], defaultVehicle }: Pri
               <p className="text-xs text-slate-400">Itemized 18% GST with full ITC credit</p>
             </div>
           </div>
-          <input
-            type="checkbox"
+          <Switch
             checked={isBusiness}
-            onChange={(e) => setIsBusiness(e.target.checked)}
-            className="w-5 h-5 rounded border-slate-700 text-[#D4AF37] focus:ring-0 focus:ring-offset-0 bg-slate-950 accent-[#D4AF37]"
+            onCheckedChange={(checked) => setIsBusiness(Boolean(checked))}
           />
-        </label>
+        </div>
       </div>
 
       {/* Pricing Breakdown Sheet */}
@@ -224,9 +232,11 @@ export default function PricingCalculator({ vehicles = [], defaultVehicle }: Pri
           <div className="mt-5 w-full flex flex-col gap-2">
             <Link
               href={`/book?vehicle=${currentVehicle.id}&tier=${selectedTier}${doorstepDelivery ? "&doorstep=1" : ""}${isBusiness ? "&business=1" : ""}`}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-sm uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all"
+              className="w-full"
             >
-              Reserve This Plan <ArrowRight className="w-4 h-4" />
+              <Button className="w-full h-12 bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-sm uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 rounded-xl">
+                Reserve This Plan <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
             </Link>
 
             <span className="text-[10px] text-slate-500 text-center">

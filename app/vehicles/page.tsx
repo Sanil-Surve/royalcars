@@ -20,6 +20,11 @@ import {
   ChevronRight,
   Info,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
 const DEMO_VEHICLES: Vehicle[] = [
   {
@@ -180,13 +185,13 @@ function VehiclesContent() {
         {/* Search & Sort Controls Bar */}
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#0A192F] border border-slate-800">
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+            <Input
               type="text"
               placeholder="Search by car name or model (e.g. Creta, Innova)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:border-[#D4AF37] focus:outline-none"
+              className="h-11 pl-10 pr-4 rounded-xl bg-slate-900 border-slate-700 text-xs text-white placeholder:text-slate-500 focus-visible:border-[#D4AF37]"
             />
           </div>
 
@@ -309,15 +314,16 @@ function VehiclesContent() {
 
               {/* Availability Toggle */}
               <div className="pt-2 border-t border-slate-800">
-                <label className="flex items-center justify-between cursor-pointer text-xs">
+                <div
+                  onClick={() => setAvailableOnly(!availableOnly)}
+                  className="flex items-center justify-between cursor-pointer text-xs select-none"
+                >
                   <span className="text-slate-300">Show Available Only</span>
-                  <input
-                    type="checkbox"
+                  <Switch
                     checked={availableOnly}
-                    onChange={(e) => setAvailableOnly(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#D4AF37] accent-[#D4AF37]"
+                    onCheckedChange={(checked) => setAvailableOnly(Boolean(checked))}
                   />
-                </label>
+                </div>
               </div>
             </div>
 
@@ -369,12 +375,23 @@ function VehiclesContent() {
                         alt={vehicle.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-[#0A192F]/80 backdrop-blur-md border border-slate-700 text-[10px] font-bold text-[#D4AF37]">
-                        {vehicle.type}
+                      <div className="absolute top-3 left-3">
+                        <Badge variant="outline" className="bg-[#0A192F]/80 backdrop-blur-md border-slate-700 text-[10px] font-bold text-[#D4AF37]">
+                          {vehicle.type}
+                        </Badge>
                       </div>
 
-                      <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 text-[10px] font-bold text-emerald-400">
-                        {vehicle.is_available ? "Available" : "Reserved"}
+                      <div className="absolute top-3 right-3">
+                        <Badge
+                          variant={vehicle.is_available ? "secondary" : "outline"}
+                          className={`text-[10px] font-bold backdrop-blur-md ${
+                            vehicle.is_available
+                              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                              : "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                          }`}
+                        >
+                          {vehicle.is_available ? "Available" : "Reserved"}
+                        </Badge>
                       </div>
                     </div>
 
@@ -420,17 +437,15 @@ function VehiclesContent() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-2">
-                          <Link
-                            href={`/vehicles/${vehicle.id}`}
-                            className="py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold text-xs text-center border border-slate-700 transition-colors"
-                          >
-                            Details
+                          <Link href={`/vehicles/${vehicle.id}`} className="w-full">
+                            <Button variant="outline" size="sm" className="w-full h-10 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold text-xs border-slate-700">
+                              Details
+                            </Button>
                           </Link>
-                          <Link
-                            href={`/book?vehicle=${vehicle.id}`}
-                            className="py-2.5 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider text-center transition-colors shadow"
-                          >
-                            Book Now
+                          <Link href={`/book?vehicle=${vehicle.id}`} className="w-full">
+                            <Button size="sm" className="w-full h-10 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider shadow">
+                              Book Now
+                            </Button>
                           </Link>
                         </div>
                       </div>

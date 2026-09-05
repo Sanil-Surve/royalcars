@@ -28,6 +28,17 @@ import {
   Sparkles,
   Download,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function CustomerDashboardPage() {
   return (
@@ -109,20 +120,28 @@ function DashboardContent() {
             </div>
             <div>
               <div className="text-[10px] text-slate-400 uppercase font-semibold">Verification Status</div>
-              <div className="text-xs font-bold text-white capitalize">
-                {user?.kyc_status === "approved"
-                  ? "Driving License Approved"
-                  : user?.kyc_status === "pending"
-                  ? "Verification In Review"
-                  : "KYC Not Uploaded"}
+              <div className="text-xs font-bold text-white capitalize flex items-center gap-1.5 mt-0.5">
+                <Badge
+                  variant={user?.kyc_status === "approved" ? "secondary" : "outline"}
+                  className={`text-[10px] font-bold ${
+                    user?.kyc_status === "approved"
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                      : "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                  }`}
+                >
+                  {user?.kyc_status === "approved"
+                    ? "DL Approved"
+                    : user?.kyc_status === "pending"
+                    ? "In Review"
+                    : "KYC Pending"}
+                </Badge>
               </div>
             </div>
             {user?.kyc_status !== "approved" && (
-              <Link
-                href="/kyc"
-                className="ml-2 px-3 py-1.5 rounded-lg bg-[#D4AF37] text-[#0A192F] text-[11px] font-bold uppercase tracking-wider hover:bg-amber-400"
-              >
-                Upload DL
+              <Link href="/kyc">
+                <Button size="xs" className="ml-2 bg-[#D4AF37] text-[#0A192F] text-[10px] font-bold uppercase tracking-wider hover:bg-amber-400 rounded-lg">
+                  Upload DL
+                </Button>
               </Link>
             )}
           </div>
@@ -143,9 +162,9 @@ function DashboardContent() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#D4AF37]">Active Digital Pass</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">
+                    <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] font-bold">
                       {activeBooking.status === "active" ? "Ride In Progress" : "Ready For Pickup"}
-                    </span>
+                    </Badge>
                   </div>
                   <h2 className="font-heading text-xl sm:text-2xl font-bold text-white mt-0.5">
                     {activeBooking.vehicle_name}
@@ -154,12 +173,12 @@ function DashboardContent() {
               </div>
 
               {/* One-tap Keyless Unlock Button */}
-              <button
+              <Button
                 onClick={() => setSelectedBookingForKey(activeBooking)}
-                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 transition-all scale-100 hover:scale-105"
+                className="px-6 py-3 h-11 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 transition-all scale-100 hover:scale-105"
               >
                 <Key className="w-4 h-4" /> Open Keyless Pass & Fob
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 text-xs text-slate-300">
@@ -192,32 +211,19 @@ function DashboardContent() {
         {/* Bookings History Tabs */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex rounded-xl bg-slate-900 p-1 border border-slate-800 text-xs">
-              <button
-                onClick={() => setActiveTab("all")}
-                className={`px-4 py-2 rounded-lg font-bold transition-all ${
-                  activeTab === "all" ? "bg-[#D4AF37] text-[#0A192F]" : "text-slate-400 hover:text-white"
-                }`}
-              >
-                All Bookings ({bookings.length})
-              </button>
-              <button
-                onClick={() => setActiveTab("active")}
-                className={`px-4 py-2 rounded-lg font-bold transition-all ${
-                  activeTab === "active" ? "bg-[#D4AF37] text-[#0A192F]" : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Active / Upcoming
-              </button>
-              <button
-                onClick={() => setActiveTab("completed")}
-                className={`px-4 py-2 rounded-lg font-bold transition-all ${
-                  activeTab === "completed" ? "bg-[#D4AF37] text-[#0A192F]" : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Completed
-              </button>
-            </div>
+            <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)}>
+              <TabsList className="bg-slate-900 border border-slate-800 p-1 rounded-2xl h-10">
+                <TabsTrigger value="all" className="text-xs font-bold rounded-xl data-active:bg-[#D4AF37] data-active:text-[#0A192F]">
+                  All ({bookings.length})
+                </TabsTrigger>
+                <TabsTrigger value="active" className="text-xs font-bold rounded-xl data-active:bg-[#D4AF37] data-active:text-[#0A192F]">
+                  Active / Upcoming
+                </TabsTrigger>
+                <TabsTrigger value="completed" className="text-xs font-bold rounded-xl data-active:bg-[#D4AF37] data-active:text-[#0A192F]">
+                  Completed
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
 
             <Link
               href="/vehicles"
@@ -261,19 +267,20 @@ function DashboardContent() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span
+                      <Badge
+                        variant={b.status === "active" ? "secondary" : "outline"}
                         className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
                           b.status === "active"
-                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                            ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                             : b.status === "confirmed"
                             ? "bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30"
                             : b.status === "completed"
                             ? "bg-slate-800 text-slate-300"
-                            : "bg-amber-500/20 text-amber-400"
+                            : "bg-amber-500/20 text-amber-400 border-amber-500/30"
                         }`}
                       >
                         {b.status.replace("_", " ")}
-                      </span>
+                      </Badge>
                     </div>
                   </div>
 
@@ -302,29 +309,34 @@ function DashboardContent() {
                   <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       {(b.status === "active" || b.status === "confirmed") && (
-                        <button
+                        <Button
+                          size="sm"
                           onClick={() => setSelectedBookingForKey(b)}
-                          className="px-4 py-2 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs flex items-center gap-1.5 hover:bg-amber-400"
+                          className="rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs flex items-center gap-1.5 hover:bg-amber-400"
                         >
                           <Key className="w-3.5 h-3.5" /> Keyless Pass
-                        </button>
+                        </Button>
                       )}
 
                       {b.balance_amount > 0 && b.status !== "cancelled" && (
-                        <button
+                        <Button
+                          size="sm"
+                          variant="outline"
                           onClick={() => handlePayBalance(b)}
-                          className="px-4 py-2 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-400 hover:bg-amber-500/10 font-bold text-xs flex items-center gap-1.5"
+                          className="rounded-xl bg-slate-900 border-amber-500/40 text-amber-400 hover:bg-amber-500/10 font-bold text-xs flex items-center gap-1.5"
                         >
                           <CreditCard className="w-3.5 h-3.5" /> Pay Remaining {formatINR(b.balance_amount)}
-                        </button>
+                        </Button>
                       )}
 
-                      <button
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => setSelectedInvoiceBooking(b)}
-                        className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5"
+                        className="rounded-xl bg-slate-900 border-slate-700 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5"
                       >
                         <Receipt className="w-3.5 h-3.5 text-[#D4AF37]" /> GST Tax Invoice
-                      </button>
+                      </Button>
                     </div>
 
                     {b.km_driven != null && (
@@ -348,25 +360,19 @@ function DashboardContent() {
           />
         )}
 
-        {/* GST Tax Invoice Modal */}
-        {selectedInvoiceBooking && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-            <div className="relative w-full max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 text-slate-100 shadow-2xl space-y-5">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <div>
-                  <h3 className="font-heading text-lg font-bold text-white">Official Tax Invoice</h3>
-                  <p className="text-[10px] text-slate-400 font-mono">Invoice #{selectedInvoiceBooking.id.slice(0, 8).toUpperCase()}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedInvoiceBooking(null)}
-                  className="text-xs text-slate-400 hover:text-white"
-                >
-                  Close
-                </button>
-              </div>
+        {/* GST Tax Invoice Modal with shadcn Dialog */}
+        <Dialog open={Boolean(selectedInvoiceBooking)} onOpenChange={(open) => { if (!open) setSelectedInvoiceBooking(null); }}>
+          {selectedInvoiceBooking && (
+            <DialogContent className="max-w-lg bg-slate-950 border border-slate-700 p-6 sm:p-8 text-slate-100 shadow-2xl rounded-3xl">
+              <DialogHeader className="pb-3 border-b border-slate-800 text-left">
+                <DialogTitle className="font-heading text-lg font-bold text-white">Official Tax Invoice</DialogTitle>
+                <DialogDescription className="text-[11px] text-slate-400 font-mono">
+                  Invoice #{selectedInvoiceBooking.id.slice(0, 8).toUpperCase()}
+                </DialogDescription>
+              </DialogHeader>
 
-              <div className="space-y-3 text-xs text-slate-300">
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div className="space-y-3 text-xs text-slate-300 mt-2">
+                <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
                   <p className="text-[11px] font-bold text-[#D4AF37]">Royal Cars Private Limited</p>
                   <p className="text-[10px] text-slate-400">GSTIN: 27AABCR9821Q1Z4 · Kharghar, Navi Mumbai</p>
                   <p className="text-[10px] text-slate-400">Customer: {user?.name} ({user?.email})</p>
@@ -393,16 +399,16 @@ function DashboardContent() {
               </div>
 
               <div className="pt-3 border-t border-slate-800 flex justify-end">
-                <button
+                <Button
                   onClick={() => window.print()}
-                  className="px-4 py-2 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-amber-400"
+                  className="rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-amber-400"
                 >
-                  <Download className="w-3.5 h-3.5" /> Print / Save PDF
-                </button>
+                  <Download className="w-3.5 h-3.5 mr-1" /> Print / Save PDF
+                </Button>
               </div>
-            </div>
-          </div>
-        )}
+            </DialogContent>
+          )}
+        </Dialog>
       </div>
     </div>
   );
