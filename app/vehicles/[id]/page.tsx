@@ -15,7 +15,6 @@ import {
   CheckCircle2,
   Sparkles,
   Truck,
-  Building2,
   MapPin,
   Clock,
   ArrowRight,
@@ -43,7 +42,6 @@ export default function VehicleDetailPage({ params }: PageProps) {
   // Booking Calculator in Sidebar
   const [selectedTier, setSelectedTier] = useState<PricingTier>("daily");
   const [doorstepDelivery, setDoorstepDelivery] = useState(false);
-  const [isBusiness, setIsBusiness] = useState(false);
 
   useEffect(() => {
     api
@@ -85,7 +83,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
     );
   }
 
-  const breakdown = computePricing(vehicle, selectedTier, doorstepDelivery, isBusiness);
+  const breakdown = computePricing(vehicle, selectedTier, doorstepDelivery, false);
 
   return (
     <div className="w-full min-h-screen bg-[#060E1A] py-8 lg:py-12">
@@ -148,7 +146,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
               <div>
                 <h1 className="font-heading text-3xl font-bold text-white">{vehicle.name}</h1>
                 <p className="text-xs text-[#D4AF37] font-semibold uppercase tracking-wider mt-1">
-                  Navi Mumbai Self-Drive Edition
+                  Kharghar & Panvel Edition
                 </p>
                 <p className="text-sm text-slate-300 mt-4 leading-relaxed">{vehicle.description}</p>
               </div>
@@ -245,7 +243,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
                 ))}
               </div>
 
-              {/* Toggles: Doorstep & Business Mode */}
+              {/* Toggle: Doorstep Delivery */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800">
                   <div className="flex items-center gap-2.5">
@@ -258,20 +256,6 @@ export default function VehicleDetailPage({ params }: PageProps) {
                   <Switch
                     checked={doorstepDelivery}
                     onCheckedChange={(val) => setDoorstepDelivery(val)}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800">
-                  <div className="flex items-center gap-2.5">
-                    <Building2 className="w-4 h-4 text-amber-400" />
-                    <div>
-                      <p className="text-xs font-bold text-white">Business Fleet / GST Invoice</p>
-                      <p className="text-[10px] text-slate-400">18% ITC credit for SME corporate accounts</p>
-                    </div>
-                  </div>
-                  <Switch
-                    checked={isBusiness}
-                    onCheckedChange={(val) => setIsBusiness(val)}
                   />
                 </div>
               </div>
@@ -302,13 +286,6 @@ export default function VehicleDetailPage({ params }: PageProps) {
                   </div>
                 )}
 
-                {breakdown.gstAmount > 0 && (
-                  <div className="flex justify-between text-amber-300">
-                    <span>GST (18% ITC applicable)</span>
-                    <span className="font-semibold">{formatINR(breakdown.gstAmount)}</span>
-                  </div>
-                )}
-
                 <div className="pt-2 border-t border-slate-800 flex justify-between font-bold text-sm text-white">
                   <span>Total Due Today</span>
                   <span className="text-[#D4AF37]">{formatINR(breakdown.totalPayable)}</span>
@@ -322,7 +299,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
 
               {/* Direct Booking CTA */}
               <Link
-                href={`/book?vehicle=${vehicle.id}&tier=${selectedTier}${doorstepDelivery ? "&doorstep=1" : ""}${isBusiness ? "&business=1" : ""}`}
+                href={`/book?vehicle=${vehicle.id}&tier=${selectedTier}${doorstepDelivery ? "&doorstep=1" : ""}`}
                 className={cn(
                   buttonVariants({ size: "lg" }),
                   "w-full h-12 bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-sm uppercase tracking-wider hover:brightness-110 shadow-lg shadow-[#D4AF37]/25 flex items-center justify-center gap-2"

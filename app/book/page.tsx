@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { useAuth } from "@/src/context/AuthContext";
 import { api } from "@/src/lib/api";
 import { Vehicle, Location, Booking, PricingTier } from "@/src/types";
@@ -11,12 +11,9 @@ import { formatINR, computePricing, validateBusinessHours, formatApiError } from
 import { processRazorpayPayment } from "@/src/lib/razorpay";
 import { toast } from "sonner";
 import {
-  Car,
   Calendar,
-  Clock,
   MapPin,
   Truck,
-  Building2,
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
@@ -24,23 +21,116 @@ import {
   Key,
   CreditCard,
   Banknote,
-  FileCheck,
-  Sparkles,
-  QrCode,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+
+const FALLBACK_VEHICLES: Vehicle[] = [
+  {
+    id: "v-rumion",
+    name: "Toyota Rumion",
+    type: "MPV",
+    fuel_type: "Petrol + CNG",
+    image_urls: [
+      "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/5f85e3cc-d253-4000-962c-b7f65fd6f6a9.jpg",
+    ],
+    price_per_24hrs: 3000,
+    deposit_amount: 5000,
+    overtime_rate_per_hour: 125,
+    is_available: true,
+    description: "7-seater with premium captain seats, smooth suspension, and ultra-economical CNG range.",
+    seats: 7,
+    transmission: "Manual",
+  },
+  {
+    id: "v-thar-roxx",
+    name: "Mahindra Thar Roxx",
+    type: "SUV",
+    fuel_type: "Diesel",
+    image_urls: [
+      "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/9c87c784-9691-46f0-a8eb-341cfa9595e9.jpg",
+    ],
+    price_per_24hrs: 7848,
+    deposit_amount: 8000,
+    overtime_rate_per_hour: 327,
+    is_available: true,
+    description: "Iconic 4x4 off-roader with Harman Kardon sound, panoramic sunroof, and automatic gearbox.",
+    seats: 5,
+    transmission: "Automatic",
+  },
+  {
+    id: "v-punch",
+    name: "Tata Punch",
+    type: "SUV",
+    fuel_type: "Petrol + CNG",
+    image_urls: [
+      "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/c12c75a4-4f38-4dd6-9b2d-0938c395f7b6.jpg",
+    ],
+    price_per_24hrs: 2808,
+    deposit_amount: 3000,
+    overtime_rate_per_hour: 117,
+    is_available: true,
+    description: "5-star GNCAP safety rated compact SUV, high ground clearance, and easy parking.",
+    seats: 5,
+    transmission: "Manual",
+  },
+  {
+    id: "v-carens",
+    name: "Kia Carens",
+    type: "MPV",
+    fuel_type: "Diesel",
+    image_urls: [
+      "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/dedd5d17-11d5-4be2-97c8-433235b95392.jpg",
+    ],
+    price_per_24hrs: 4488,
+    deposit_amount: 6000,
+    overtime_rate_per_hour: 187,
+    is_available: true,
+    description: "Spacious 7-seater with rear AC vents, ventilated seats, and expansive boot space.",
+    seats: 7,
+    transmission: "Manual",
+  },
+  {
+    id: "v-i20",
+    name: "Hyundai i20",
+    type: "Hatchback",
+    fuel_type: "Petrol",
+    image_urls: [
+      "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/59995f89-6e09-4c92-9f5a-49f9349fbfa5.jpg",
+    ],
+    price_per_24hrs: 2808,
+    deposit_amount: 4000,
+    overtime_rate_per_hour: 117,
+    is_available: true,
+    description: "Premium European styling, digital cluster, and crisp responsive steering for highway trips.",
+    seats: 5,
+    transmission: "Manual",
+  },
+  {
+    id: "v-swift",
+    name: "Maruti Swift",
+    type: "Hatchback",
+    fuel_type: "Petrol",
+    image_urls: [
+      "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/c2443da4-3a61-4164-916e-5420eb76323c.jpg",
+    ],
+    price_per_24hrs: 2200,
+    deposit_amount: 3000,
+    overtime_rate_per_hour: 99,
+    is_available: true,
+    description: "City champion with 24 km/l fuel efficiency, wireless Apple CarPlay, and plush cabin.",
+    seats: 5,
+    transmission: "Manual",
+  },
+];
 
 export default function BookingWizardPage() {
   return (
     <React.Suspense
       fallback={
-        <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 bg-[#060E1A]">
-          <div className="w-10 h-10 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs text-slate-400">Loading reservation wizard...</p>
+        <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 bg-slate-50 dark:bg-slate-950">
+          <div className="w-10 h-10 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs text-slate-500 dark:text-slate-400">Loading reservation wizard...</p>
         </div>
       }
     >
@@ -58,66 +148,80 @@ function BookingWizardContent() {
   const tierParam = (searchParams.get("tier") as PricingTier) || "daily";
 
   const doorstepParam = searchParams.get("doorstep") === "1";
-  const businessParam = searchParams.get("business") === "1";
 
   const [step, setStep] = useState<number>(1);
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>(FALLBACK_VEHICLES);
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Form State
-  const [selectedVehicleId, setSelectedVehicleId] = useState<string>(vehicleParam);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>(vehicleParam || FALLBACK_VEHICLES[0].id);
   const [pickupLocId, setPickupLocId] = useState<string>("");
   const [dropoffLocId, setDropoffLocId] = useState<string>("");
-  const [pickupDate, setPickupDate] = useState<string>("");
+  const [pickupDate, setPickupDate] = useState<string>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  });
   const [pickupTime, setPickupTime] = useState<string>("09:00");
-  const [dropoffDate, setDropoffDate] = useState<string>("");
+  const [dropoffDate, setDropoffDate] = useState<string>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 2);
+    return d.toISOString().split("T")[0];
+  });
   const [dropoffTime, setDropoffTime] = useState<string>("21:00");
 
-  // Delivery & Business Addons
+  // Delivery Addon
   const [isDoorstep, setIsDoorstep] = useState<boolean>(doorstepParam);
   const [deliveryAddress, setDeliveryAddress] = useState<string>("");
-  const [isBusiness, setIsBusiness] = useState<boolean>(businessParam);
-  const [companyName, setCompanyName] = useState<string>("");
-  const [gstin, setGstin] = useState<string>("");
 
   // Payment & Booking Confirmation State
   const [createdBooking, setCreatedBooking] = useState<Booking | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    // Default dates
-    const today = new Date();
-    const tom = new Date(today);
-    tom.setDate(today.getDate() + 1);
-    const dayAfter = new Date(today);
-    dayAfter.setDate(today.getDate() + 2);
-
-    setPickupDate(tom.toISOString().split("T")[0]);
-    setDropoffDate(dayAfter.toISOString().split("T")[0]);
-
     Promise.all([
       api.get<Vehicle[]>("/vehicles").catch(() => ({ data: [] })),
       api.get<Location[]>("/locations").catch(() => ({ data: [] })),
     ]).then(([vehRes, locRes]) => {
-      setVehicles(vehRes.data || []);
-      setLocations(locRes.data || []);
-      if (locRes.data && locRes.data.length > 0) {
-        setPickupLocId(locRes.data[0].id);
-        setDropoffLocId(locRes.data[0].id);
-      }
-      if (!vehicleParam && vehRes.data && vehRes.data[0]) {
-        setSelectedVehicleId(vehRes.data[0].id);
+      const backendVehicles = vehRes.data && vehRes.data.length > 0 ? vehRes.data : [];
+      const mergedVehicles = backendVehicles.length > 0 ? backendVehicles : FALLBACK_VEHICLES;
+      setVehicles(mergedVehicles);
+
+      const locList =
+        locRes.data && locRes.data.length > 0
+          ? locRes.data
+          : [
+              { id: "loc-kharghar", name: "Kharghar - Little World Mall (Sector 2)", address: "Navi Mumbai", is_active: true },
+              { id: "loc-panvel", name: "Panvel - Orion Mall (Station Road)", address: "Navi Mumbai", is_active: true },
+            ];
+      setLocations(locList);
+      setPickupLocId(locList[0].id);
+      setDropoffLocId(locList[0].id);
+
+      // Match vehicleParam by ID or name
+      if (vehicleParam) {
+        const cleanParam = vehicleParam.toLowerCase();
+        const found =
+          mergedVehicles.find((v) => v.id === vehicleParam || v.id.toLowerCase() === cleanParam) ||
+          mergedVehicles.find((v) =>
+            v.name.toLowerCase().includes(cleanParam.replace("v-", "").replace(/-/g, " "))
+          );
+        if (found) {
+          setSelectedVehicleId(found.id);
+        } else if (mergedVehicles[0]) {
+          setSelectedVehicleId(mergedVehicles[0].id);
+        }
+      } else if (mergedVehicles[0]) {
+        setSelectedVehicleId(mergedVehicles[0].id);
       }
       setLoading(false);
     });
   }, [vehicleParam]);
 
-  const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId) || vehicles[0];
+  const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId) || vehicles[0] || FALLBACK_VEHICLES[0];
 
-  const breakdown = selectedVehicle
-    ? computePricing(selectedVehicle, tierParam, isDoorstep, isBusiness)
-    : null;
+  const breakdown = computePricing(selectedVehicle, tierParam, isDoorstep, false);
 
   // Handler for creating the booking on backend
   const handleCreateBooking = async (paymentOption: "full" | "partial" | "site") => {
@@ -142,8 +246,8 @@ function BookingWizardContent() {
       // 1. Create booking in backend
       const res = await api.post<Booking>("/bookings", {
         vehicle_id: selectedVehicle.id,
-        pickup_location_id: pickupLocId || locations[0]?.id || "loc1",
-        dropoff_location_id: dropoffLocId || locations[0]?.id || "loc1",
+        pickup_location_id: pickupLocId || locations[0]?.id || "loc-kharghar",
+        dropoff_location_id: dropoffLocId || locations[0]?.id || "loc-kharghar",
         pickup_date: pickupDate,
         pickup_time: pickupTime,
         dropoff_date: dropoffDate,
@@ -170,12 +274,11 @@ function BookingWizardContent() {
           setCreatedBooking(updated);
           setStep(5);
         } else {
-          // If cancelled or closed, still set booking so customer can see it
           setCreatedBooking(newBooking);
           setStep(5);
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(formatApiError(err));
     } finally {
       setSubmitting(false);
@@ -184,32 +287,32 @@ function BookingWizardContent() {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 bg-[#060E1A]">
-        <div className="w-10 h-10 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-slate-400">Initializing reservation wizard...</p>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 bg-slate-50 dark:bg-slate-950">
+        <div className="w-10 h-10 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-slate-500 dark:text-slate-400">Initializing reservation wizard...</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#060E1A] py-8 lg:py-12">
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-8 lg:py-12 transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Wizard Progress Indicator */}
         <div className="mb-10">
-          <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+          <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
             <span>Step {step} of 5</span>
-            <span className="text-[#D4AF37]">
+            <span className="text-blue-600 dark:text-blue-400 font-bold">
               {step === 1 && "Vehicle & Schedule"}
               {step === 2 && "Delivery & Handover Mode"}
-              {step === 3 && "Add-ons & SME GST"}
+              {step === 3 && "Add-ons & Assurances"}
               {step === 4 && "Review & Payment"}
               {step === 5 && "Voucher & Keyless Pass"}
             </span>
           </div>
 
-          <div className="h-2 w-full rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+          <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#D4AF37] to-amber-400"
+              className="h-full bg-blue-600"
               initial={{ width: "20%" }}
               animate={{ width: `${(step / 5) * 100}%` }}
               transition={{ duration: 0.3 }}
@@ -218,21 +321,25 @@ function BookingWizardContent() {
         </div>
 
         {/* Wizard Card Body */}
-        <div className="rounded-3xl bg-[#0A192F] border border-slate-800 p-6 sm:p-8 lg:p-10 shadow-2xl">
+        <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 lg:p-10 shadow-xl">
           {/* STEP 1: Vehicle & Schedule */}
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-2xl font-bold text-white">Select Vehicle & Trip Schedule</h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
+                  Select Vehicle & Trip Schedule
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Choose your preferred model and scheduled dates. Handover is available from 05:00 AM to 11:00 PM.
                 </p>
               </div>
 
               {/* Vehicle Picker */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Vehicle Selection</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Vehicle Selection
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
                   {vehicles.map((v) => (
                     <button
                       key={v.id}
@@ -240,20 +347,20 @@ function BookingWizardContent() {
                       onClick={() => setSelectedVehicleId(v.id)}
                       className={`p-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                         selectedVehicleId === v.id
-                          ? "bg-slate-900 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/10"
-                          : "bg-slate-950/60 border-slate-800 opacity-70 hover:opacity-100"
+                          ? "bg-blue-50/80 dark:bg-blue-950/40 border-blue-600 shadow-md shadow-blue-500/10 ring-1 ring-blue-600"
+                          : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={v.image_urls?.[0]}
+                        src={v.image_urls?.[0] || "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/5f85e3cc-d253-4000-962c-b7f65fd6f6a9.jpg"}
                         alt={v.name}
-                        className="w-16 h-12 rounded-xl object-cover border border-slate-700"
+                        className="w-16 h-12 rounded-xl object-contain bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-1"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-white truncate">{v.name}</p>
-                        <p className="text-[10px] text-slate-400">{v.type} · {v.transmission}</p>
-                        <p className="text-xs font-bold text-[#D4AF37] mt-0.5">{formatINR(v.price_per_24hrs)}/24h</p>
+                        <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{v.name}</p>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400">{v.type} · {v.transmission}</p>
+                        <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">{formatINR(v.price_per_24hrs)}/24h</p>
                       </div>
                     </button>
                   ))}
@@ -262,21 +369,21 @@ function BookingWizardContent() {
 
               {/* Schedule Dates & Times */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-bold text-white">
-                    <Calendar className="w-4 h-4 text-[#D4AF37]" /> Pickup Date & Time
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
+                    <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Pickup Date & Time
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       type="date"
                       value={pickupDate}
                       onChange={(e) => setPickupDate(e.target.value)}
-                      className="h-11 rounded-xl bg-slate-950 border border-slate-700 px-2 text-xs text-white"
+                      className="h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 text-xs text-slate-900 dark:text-white font-medium"
                     />
                     <select
                       value={pickupTime}
                       onChange={(e) => setPickupTime(e.target.value)}
-                      className="h-11 rounded-xl bg-slate-950 border border-slate-700 px-2 text-xs text-white"
+                      className="h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 text-xs text-slate-900 dark:text-white font-medium"
                     >
                       {Array.from({ length: 19 }).map((_, i) => {
                         const h = 5 + i;
@@ -287,21 +394,21 @@ function BookingWizardContent() {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-bold text-white">
-                    <Calendar className="w-4 h-4 text-[#D4AF37]" /> Drop-off Date & Time
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
+                    <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Drop-off Date & Time
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       type="date"
                       value={dropoffDate}
                       onChange={(e) => setDropoffDate(e.target.value)}
-                      className="h-11 rounded-xl bg-slate-950 border border-slate-700 px-2 text-xs text-white"
+                      className="h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 text-xs text-slate-900 dark:text-white font-medium"
                     />
                     <select
                       value={dropoffTime}
                       onChange={(e) => setDropoffTime(e.target.value)}
-                      className="h-11 rounded-xl bg-slate-950 border border-slate-700 px-2 text-xs text-white"
+                      className="h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 text-xs text-slate-900 dark:text-white font-medium"
                     >
                       {Array.from({ length: 19 }).map((_, i) => {
                         const h = 5 + i;
@@ -314,13 +421,13 @@ function BookingWizardContent() {
               </div>
 
               <div className="pt-4 flex justify-end">
-                <button
+                <Button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-6 py-3 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-amber-400 shadow"
+                  className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-blue-700 shadow-md shadow-blue-500/20"
                 >
                   Continue To Handover Mode <ArrowRight className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -329,8 +436,10 @@ function BookingWizardContent() {
           {step === 2 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-2xl font-bold text-white">Choose Handover Mode</h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
+                  Choose Handover Mode
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Pick up at a Navi Mumbai mall hub or have the sanitized vehicle dispatched to your home / office.
                 </p>
               </div>
@@ -341,20 +450,22 @@ function BookingWizardContent() {
                   onClick={() => setIsDoorstep(false)}
                   className={`p-6 rounded-2xl border text-left space-y-3 transition-all ${
                     !isDoorstep
-                      ? "bg-slate-900 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/10"
-                      : "bg-slate-950 border-slate-800 opacity-70 hover:opacity-100"
+                      ? "bg-blue-50/80 dark:bg-blue-950/40 border-blue-600 shadow-md shadow-blue-500/10 ring-1 ring-blue-600"
+                      : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-sm">Mall Hub Handover (Free)</h3>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">Mall Hub Handover (Free)</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       Pick up and drop off at Little World Mall Kharghar or Orion Mall Panvel.
                     </p>
                   </div>
-                  <span className="inline-block text-[10px] font-bold text-emerald-400 uppercase">₹0 Extra Charge</span>
+                  <span className="inline-block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">
+                    ₹0 Extra Charge
+                  </span>
                 </button>
 
                 <button
@@ -362,31 +473,33 @@ function BookingWizardContent() {
                   onClick={() => setIsDoorstep(true)}
                   className={`p-6 rounded-2xl border text-left space-y-3 transition-all ${
                     isDoorstep
-                      ? "bg-slate-900 border-[#D4AF37] shadow-lg shadow-[#D4AF37]/10"
-                      : "bg-slate-950 border-slate-800 opacity-70 hover:opacity-100"
+                      ? "bg-blue-50/80 dark:bg-blue-950/40 border-blue-600 shadow-md shadow-blue-500/10 ring-1 ring-blue-600"
+                      : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                     <Truck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-sm">Doorstep Delivery & Return (+₹499)</h3>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">Doorstep Delivery & Return (+₹499)</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       Our fleet executive delivers the sanitized vehicle to your doorstep and collects it on return.
                     </p>
                   </div>
-                  <span className="inline-block text-[10px] font-bold text-[#D4AF37] uppercase">Premium Convenience</span>
+                  <span className="inline-block text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">
+                    Premium Convenience
+                  </span>
                 </button>
               </div>
 
               {!isDoorstep ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400">Pickup Hub</label>
+                    <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">Pickup Hub</label>
                     <select
                       value={pickupLocId}
                       onChange={(e) => setPickupLocId(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                      className="w-full h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 text-xs text-slate-900 dark:text-white font-medium"
                     >
                       {locations.map((l) => (
                         <option key={l.id} value={l.id}>{l.name}</option>
@@ -395,11 +508,11 @@ function BookingWizardContent() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400">Drop-off Hub</label>
+                    <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">Drop-off Hub</label>
                     <select
                       value={dropoffLocId}
                       onChange={(e) => setDropoffLocId(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white"
+                      className="w-full h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 text-xs text-slate-900 dark:text-white font-medium"
                     >
                       {locations.map((l) => (
                         <option key={l.id} value={l.id}>{l.name}</option>
@@ -409,7 +522,7 @@ function BookingWizardContent() {
                 </div>
               ) : (
                 <div className="space-y-2 pt-2">
-                  <label className="text-xs font-bold uppercase text-slate-400">
+                  <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
                     Doorstep Delivery Address in Navi Mumbai
                   </label>
                   <Textarea
@@ -417,7 +530,7 @@ function BookingWizardContent() {
                     placeholder="Enter building name, flat number, street and landmark (Kharghar, Panvel, Vashi, Belapur, Seawoods)..."
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
-                    className="w-full rounded-xl bg-slate-900 border-slate-700 p-3 text-xs text-white placeholder:text-slate-500"
+                    className="w-full rounded-xl bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 p-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400"
                   />
                 </div>
               )}
@@ -428,7 +541,7 @@ function BookingWizardContent() {
                   variant="outline"
                   size="sm"
                   onClick={() => setStep(1)}
-                  className="rounded-xl bg-slate-900 text-slate-300 text-xs font-bold uppercase border-slate-700"
+                  className="rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase"
                 >
                   <ArrowLeft className="w-4 h-4 mr-1" /> Back
                 </Button>
@@ -436,99 +549,57 @@ function BookingWizardContent() {
                   type="button"
                   size="sm"
                   onClick={() => setStep(3)}
-                  className="rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:bg-amber-400 shadow"
+                  className="rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-blue-700 shadow-md shadow-blue-500/20"
                 >
-                  Continue To Add-ons & GST <ArrowRight className="w-4 h-4 ml-1" />
+                  Continue To Add-ons & Assurances <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* STEP 3: Add-ons & SME Corporate GST Mode */}
+          {/* STEP 3: Add-ons & Trip Assurances */}
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-2xl font-bold text-white">Add-ons & Corporate Billing</h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Configure business GST invoicing for tax input credit and extra trip assurances.
+                <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
+                  Trip Add-ons & Assurances
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Complimentary assurances and trip coverage included with your reservation.
                 </p>
               </div>
 
-              {/* Business Fleet Toggle */}
-              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-                <div
-                  onClick={() => setIsBusiness(!isBusiness)}
-                  className="flex items-center justify-between cursor-pointer select-none"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                      <Building2 className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white">Book under SME / Corporate Account</p>
-                      <p className="text-xs text-slate-400">Generate 18% GST invoice with input tax credit (ITC)</p>
-                    </div>
-                  </div>
-                  <Switch
-                    checked={isBusiness}
-                    onCheckedChange={(checked) => setIsBusiness(Boolean(checked))}
-                  />
-                </div>
-
-                {isBusiness && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-800">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold uppercase text-slate-400">Registered Company Name</label>
-                      <Input
-                        type="text"
-                        placeholder="e.g. Acme Technologies Pvt Ltd"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        className="w-full h-10 rounded-xl bg-slate-950 border-slate-700 px-3 text-xs text-white"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold uppercase text-slate-400">GSTIN Number (15-digit)</label>
-                      <Input
-                        type="text"
-                        placeholder="e.g. 27AABCR9821Q1Z4"
-                        value={gstin}
-                        onChange={(e) => setGstin(e.target.value.toUpperCase())}
-                        maxLength={15}
-                        className="w-full h-10 rounded-xl bg-slate-950 border-slate-700 px-3 text-xs text-white font-mono"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
               {/* Trip Assurances */}
-              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                  <ShieldCheck className="w-4 h-4" /> Included Free of Charge
+              <div className="p-5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 space-y-3 text-xs">
+                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-sm">
+                  <ShieldCheck className="w-5 h-5" /> Included Free of Charge
                 </div>
-                <ul className="space-y-1 text-slate-400 pl-6 list-disc">
+                <ul className="space-y-2 text-emerald-800 dark:text-emerald-300/90 pl-6 list-disc">
                   <li>Zero deposit deduction for standard wear & tear</li>
                   <li>Fastag automatic toll reconciliation</li>
                   <li>24/7 Roadside breakdown towing across Mumbai & Pune corridors</li>
+                  <li>Clean, sanitized vehicle with full fuel tank on delivery/pickup</li>
                 </ul>
               </div>
 
               <div className="pt-4 flex justify-between items-center">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setStep(2)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-900 text-slate-300 text-xs font-bold uppercase flex items-center gap-1.5"
+                  className="rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Back
-                </button>
-                <button
+                  <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                </Button>
+                <Button
                   type="button"
+                  size="sm"
                   onClick={() => setStep(4)}
-                  className="px-6 py-3 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-amber-400 shadow"
+                  className="rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-blue-700 shadow-md shadow-blue-500/20"
                 >
-                  Review Summary & Pay <ArrowRight className="w-4 h-4" />
-                </button>
+                  Review Summary & Pay <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
               </div>
             </div>
           )}
@@ -537,57 +608,55 @@ function BookingWizardContent() {
           {step === 4 && breakdown && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-2xl font-bold text-white">Review Summary & Choose Payment</h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
+                  Review Summary & Choose Payment
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Choose between 100% online payment, 20% advance token, or paying cash/UPI at the mall hub.
                 </p>
               </div>
 
               {/* Booking Summary Box */}
-              <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
                   <div>
-                    <h3 className="text-base font-bold text-white">{selectedVehicle?.name}</h3>
-                    <p className="text-xs text-slate-400">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">{selectedVehicle?.name}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {pickupDate} ({pickupTime}) &rarr; {dropoffDate} ({dropoffTime})
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-[#D4AF37] px-2.5 py-1 rounded-full bg-[#D4AF37]/15">
+                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40">
                     {breakdown.durationLabel}
                   </span>
                 </div>
 
                 <div className="space-y-1.5 text-xs">
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-slate-600 dark:text-slate-400">
                     <span>Base Vehicle Rent</span>
-                    <span className="font-semibold text-white">{formatINR(breakdown.finalRent)}</span>
+                    <span className="font-semibold text-slate-900 dark:text-white">{formatINR(breakdown.finalRent)}</span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-slate-600 dark:text-slate-400">
                     <span>Refundable Security Deposit</span>
-                    <span className="font-semibold text-emerald-400">{formatINR(breakdown.deposit)}</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">{formatINR(breakdown.deposit)}</span>
                   </div>
                   {breakdown.doorstepFee > 0 && (
-                    <div className="flex justify-between text-slate-400">
+                    <div className="flex justify-between text-slate-600 dark:text-slate-400">
                       <span>Doorstep Delivery & Return</span>
-                      <span className="font-semibold text-white">{formatINR(breakdown.doorstepFee)}</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">{formatINR(breakdown.doorstepFee)}</span>
                     </div>
                   )}
-                  {breakdown.gstAmount > 0 && (
-                    <div className="flex justify-between text-amber-300">
-                      <span>GST (18% ITC)</span>
-                      <span className="font-semibold">{formatINR(breakdown.gstAmount)}</span>
-                    </div>
-                  )}
-                  <div className="pt-2 border-t border-slate-800 flex justify-between text-base font-extrabold text-white">
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-base font-extrabold text-slate-900 dark:text-white">
                     <span>Total Amount</span>
-                    <span className="text-[#D4AF37]">{formatINR(breakdown.totalPayable)}</span>
+                    <span className="text-blue-600 dark:text-blue-400">{formatINR(breakdown.totalPayable)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Payment Methods Choice Cards */}
               <div className="space-y-3">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Select Payment Method</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Select Payment Method
+                </label>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {/* Option 1: 100% Full Payment */}
@@ -595,16 +664,16 @@ function BookingWizardContent() {
                     type="button"
                     disabled={submitting}
                     onClick={() => handleCreateBooking("full")}
-                    className="p-4 rounded-2xl bg-slate-900 border border-[#D4AF37] hover:bg-slate-800/80 text-left space-y-2 transition-all group"
+                    className="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-blue-600 hover:bg-blue-50/50 dark:hover:bg-slate-700/50 text-left space-y-2 transition-all shadow-sm group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                       <CreditCard className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white group-hover:text-[#D4AF37]">Pay 100% Online</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">UPI, Cards, Netbanking via Razorpay</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600">Pay 100% Online</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">UPI, Cards, Netbanking</p>
                     </div>
-                    <span className="text-xs font-bold text-[#D4AF37] block mt-1">
+                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400 block mt-1">
                       Pay {formatINR(breakdown.totalPayable)}
                     </span>
                   </button>
@@ -614,16 +683,16 @@ function BookingWizardContent() {
                     type="button"
                     disabled={submitting}
                     onClick={() => handleCreateBooking("partial")}
-                    className="p-4 rounded-2xl bg-slate-900 border border-slate-700 hover:border-[#D4AF37] hover:bg-slate-800/80 text-left space-y-2 transition-all group"
+                    className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 hover:bg-emerald-50/30 text-left space-y-2 transition-all shadow-sm group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                       <Key className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white group-hover:text-[#D4AF37]">Pay 20% Advance Token</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">Lock slot now; balance at handover</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-600">Pay 20% Token</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Lock slot now; balance at site</p>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400 block mt-1">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block mt-1">
                       Pay {formatINR(Math.round(breakdown.totalPayable * 0.2))}
                     </span>
                   </button>
@@ -633,16 +702,16 @@ function BookingWizardContent() {
                     type="button"
                     disabled={submitting}
                     onClick={() => handleCreateBooking("site")}
-                    className="p-4 rounded-2xl bg-slate-900 border border-slate-700 hover:border-[#D4AF37] hover:bg-slate-800/80 text-left space-y-2 transition-all group"
+                    className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 hover:bg-slate-100/50 text-left space-y-2 transition-all shadow-sm group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                       <Banknote className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white group-hover:text-[#D4AF37]">Pay at Mall Hub</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">Pay via cash or UPI at pickup</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-slate-950">Pay at Mall Hub</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Pay via cash or UPI at pickup</p>
                     </div>
-                    <span className="text-xs font-bold text-cyan-400 block mt-1">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block mt-1">
                       Pay at Handover
                     </span>
                   </button>
@@ -650,13 +719,15 @@ function BookingWizardContent() {
               </div>
 
               <div className="pt-4 flex justify-between items-center">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setStep(3)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-900 text-slate-300 text-xs font-bold uppercase flex items-center gap-1.5"
+                  className="rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Back
-                </button>
+                  <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                </Button>
               </div>
             </div>
           )}
@@ -664,31 +735,31 @@ function BookingWizardContent() {
           {/* STEP 5: Booking Voucher & Digital Key Confirmation */}
           {step === 5 && (
             <div className="text-center space-y-6">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-md shadow-emerald-500/10">
                 <CheckCircle2 className="w-9 h-9" />
               </div>
 
               <div>
-                <h2 className="font-heading text-3xl font-extrabold text-white">Booking Reserved!</h2>
-                <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-                  Your reservation ID is <span className="font-mono text-[#D4AF37] font-bold">#{createdBooking?.id?.slice(0, 8) || "ROYAL78"}</span>.
+                <h2 className="font-heading text-3xl font-extrabold text-slate-900 dark:text-white">Booking Reserved!</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
+                  Your reservation ID is <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">#{createdBooking?.id?.slice(0, 8) || "ROYAL78"}</span>.
                   A confirmation summary has been logged to your customer account.
                 </p>
               </div>
 
               {/* Digital Handover Card */}
-              <div className="max-w-md mx-auto p-6 rounded-3xl bg-slate-950 border border-[#D4AF37]/40 text-left space-y-4 shadow-xl">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <span className="text-xs font-bold text-slate-400 uppercase">Self-Drive Pass</span>
-                  <span className="text-xs font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10">
+              <div className="max-w-md mx-auto p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-4 shadow-lg">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Rental Pass</span>
+                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/50">
                     Handover Ready
                   </span>
                 </div>
 
-                <div className="space-y-1.5 text-xs text-slate-300">
+                <div className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
                   <div className="flex justify-between">
                     <span className="text-slate-500">Vehicle:</span>
-                    <span className="font-bold text-white">{createdBooking?.vehicle_name || selectedVehicle?.name}</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{createdBooking?.vehicle_name || selectedVehicle?.name}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Pickup Date:</span>
@@ -700,12 +771,12 @@ function BookingWizardContent() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Status:</span>
-                    <span className="capitalize text-[#D4AF37] font-semibold">{createdBooking?.status || "Confirmed"}</span>
+                    <span className="capitalize text-blue-600 dark:text-blue-400 font-semibold">{createdBooking?.status || "Confirmed"}</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-400 flex items-start gap-2">
-                  <Key className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 text-[11px] text-slate-600 dark:text-slate-300 flex items-start gap-2">
+                  <Key className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                   <span>
                     Your keyless digital unlock widget is now active on your Customer Dashboard. Make sure your Driving License KYC is uploaded.
                   </span>
@@ -715,13 +786,13 @@ function BookingWizardContent() {
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <Link
                   href="/dashboard"
-                  className="px-6 py-3.5 rounded-xl bg-[#D4AF37] text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:bg-amber-400 shadow-lg"
+                  className="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20"
                 >
                   Go To Customer Dashboard &rarr;
                 </Link>
                 <Link
                   href="/kyc"
-                  className="px-6 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white font-semibold text-xs uppercase tracking-wider hover:bg-slate-800"
+                  className="px-6 py-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-semibold text-xs uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-700"
                 >
                   Verify Driving License (KYC)
                 </Link>

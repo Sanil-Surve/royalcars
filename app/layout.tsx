@@ -23,9 +23,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Royal Cars | Luxury Self-Drive Car Rentals Navi Mumbai",
+  title: "Royal Cars | Premium Car Rentals in Kharghar & Panvel",
   description:
-    "Premium self-drive car rentals across Kharghar, Panvel & Navi Mumbai. Instant booking, keyless unlock, doorstep delivery, hourly/daily/monthly flexible pricing, and SME business fleet accounts.",
+    "Premium car rentals across Kharghar and Panvel. Instant booking, keyless unlock, doorstep delivery, and flexible hourly, daily, and monthly pricing.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -41,12 +41,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full dark", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, notoSerifHeading.variable)}
+      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, notoSerifHeading.variable)}
     >
-      <body className="min-h-full flex flex-col bg-[#060E1A] text-slate-100">
+      <body className="min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
         <AuthProvider>
           <TooltipProvider>
-            <Toaster richColors position="top-right" theme="dark" closeButton />
+            <Toaster richColors position="top-right" closeButton />
             <Navbar />
             <main className="flex-1 flex flex-col">{children}</main>
             <Footer />

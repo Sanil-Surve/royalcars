@@ -3,26 +3,16 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/src/context/AuthContext";
 import {
-  Car,
-  ShieldCheck,
-  Building2,
-  MapPin,
-  User,
-  LogOut,
+  Crown,
   LayoutDashboard,
   FileCheck,
   Menu,
   X,
-  Sparkles,
-  PhoneCall,
-  Crown,
+  LogOut,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,248 +28,208 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: "Fleet", href: "/vehicles", icon: Car },
-    { label: "Flexible Pricing", href: "/#pricing", icon: Sparkles },
-    { label: "Business Fleet", href: "/business", icon: Building2 },
-    { label: "Hubs & Locations", href: "/#hubs", icon: MapPin },
+    { label: "Home", href: "/" },
+    { label: "Fleet", href: "/vehicles" },
+    { label: "Flexible Pricing", href: "/#pricing" },
+    { label: "Location", href: "/#location" },
+    { label: "FAQ", href: "/#faq" },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#0A192F]/90 border-b border-slate-800/80 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-amber-500 flex items-center justify-center text-[#0A192F] shadow-lg shadow-[#D4AF37]/20 group-hover:scale-105 transition-transform">
-            <Crown className="w-6 h-6 fill-current" />
+    <>
+      <nav className="sticky top-0 left-0 right-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md transition-all duration-300">
+        <div className="flex items-center justify-between px-4 sm:px-6 md:px-12 py-3.5 w-full mx-auto relative">
+          {/* Brand Logo */}
+          <Link className="flex items-center gap-2.5 group" href="/">
+            <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold shadow-md shadow-primary/25 group-hover:scale-105 transition-transform">
+              <Crown className="w-5 h-5 fill-current" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
+                Royal<span className="text-primary"> Cars</span>
+              </span>
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5">
+                Kharghar & Panvel
+              </span>
+            </div>
+          </Link>
+
+          {/* Desktop Center Links */}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-7">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={`relative py-1 text-sm font-medium transition-all group ${
+                    isActive
+                      ? "text-primary font-semibold"
+                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
+              );
+            })}
           </div>
-          <div>
-            <span className="font-heading text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-              Royal Cars <span className="text-[#D4AF37] text-xs uppercase tracking-widest font-sans font-bold">Fleet</span>
-            </span>
-            <span className="text-[10px] text-slate-400 block tracking-widest uppercase font-mono">
-              Navi Mumbai · Kharghar & Panvel
-            </span>
-          </div>
-        </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all ${
-                  isActive
-                    ? "bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30"
-                    : "text-slate-300 hover:text-white hover:bg-slate-800/60"
-                }`}
-              >
-                <link.icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-white" />
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/vehicles"
+              className="hidden md:inline-flex items-center justify-center bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-all duration-200 shadow-sm shadow-primary/20 hover:shadow"
+            >
+              Book Now
+            </Link>
 
-        {/* Right Action Cluster */}
-        <div className="hidden md:flex items-center gap-3">
-          {/* Quick Hub Indicator */}
-          <Badge
-            variant="outline"
-            className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border-slate-800 text-[11px] text-slate-300 font-normal"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Kharghar & Panvel Hubs Live</span>
-          </Badge>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2.5 p-1 rounded-full border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-colors cursor-pointer outline-none">
+                  <Avatar className="w-8 h-8 rounded-full border border-primary/20">
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                      {user.name ? user.name.slice(0, 1).toUpperCase() : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 hidden lg:inline max-w-[100px] truncate pr-2">
+                    {user.name}
+                  </span>
+                </DropdownMenuTrigger>
 
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-slate-900/90 border border-slate-700/80 hover:border-[#D4AF37] text-white transition-colors cursor-pointer outline-none">
-                <Avatar className="w-8 h-8 rounded-full border border-[#D4AF37]/50">
-                  <AvatarFallback className="bg-gradient-to-tr from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs">
-                    {user.name ? user.name.slice(0, 1).toUpperCase() : "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-left text-xs">
-                  <p className="font-semibold text-slate-200 line-clamp-1 max-w-[100px]">{user.name || "Customer"}</p>
-                  <p className="text-[10px] text-slate-400 capitalize">
-                    {user.role === "admin" ? "Fleet Admin" : user.kyc_status === "approved" ? "KYC Verified" : "KYC Pending"}
-                  </p>
-                </div>
-              </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-60 rounded-2xl p-2 shadow-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                  <DropdownMenuLabel className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">{user.name}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                  </DropdownMenuLabel>
 
-              <DropdownMenuContent align="end" className="w-60 rounded-2xl bg-[#0A192F] border-slate-700/90 p-2 shadow-2xl text-slate-100 z-50">
-                <DropdownMenuLabel className="px-3 py-2 border-b border-slate-800">
-                  <p className="text-xs font-bold text-white">{user.name}</p>
-                  <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
-                  <div className="mt-1.5 flex items-center gap-1.5">
-                    <Badge
-                      variant="secondary"
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                        user.kyc_status === "approved"
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                      }`}
-                    >
-                      KYC: {user.kyc_status}
-                    </Badge>
-                  </div>
-                </DropdownMenuLabel>
-
-                <div className="py-1 space-y-0.5">
-                  <DropdownMenuItem className="rounded-xl px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 cursor-pointer">
-                    <Link href="/dashboard" className="flex items-center gap-2 w-full">
-                      <LayoutDashboard className="w-4 h-4 text-[#D4AF37]" /> My Bookings & Key
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="rounded-xl px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 cursor-pointer">
-                    <Link href="/kyc" className="flex items-center gap-2 w-full">
-                      <FileCheck className="w-4 h-4 text-emerald-400" /> KYC Verification Center
-                    </Link>
-                  </DropdownMenuItem>
-
-                  {user.role === "admin" && (
-                    <DropdownMenuItem className="rounded-xl px-3 py-2 text-xs font-bold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 cursor-pointer">
-                      <Link href="/admin" className="flex items-center gap-2 w-full">
-                        <Crown className="w-4 h-4 text-amber-400" /> Fleet Admin Console
+                  <div className="py-1 space-y-0.5">
+                    <DropdownMenuItem className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer">
+                      <Link href="/dashboard" className="flex items-center gap-2 w-full">
+                        <LayoutDashboard className="w-4 h-4 text-primary" /> My Bookings
                       </Link>
                     </DropdownMenuItem>
-                  )}
-                </div>
-
-                <DropdownMenuSeparator className="bg-slate-800" />
-
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={() => logout()}
-                  className="rounded-xl px-3 py-2 text-xs font-medium text-rose-300 hover:bg-rose-950/40 cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4 text-rose-400 mr-2" /> Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link href="/login">
-                <Button variant="ghost" size="sm" className="rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm" className="rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-400 text-[#0A192F] font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-md shadow-[#D4AF37]/20">
-                  Join / Register
-                </Button>
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Menu Trigger */}
-        <div className="flex md:hidden items-center gap-2">
-          {user && (
-            <Link
-              href="/dashboard"
-              className="p-2 rounded-xl bg-slate-900 border border-slate-700 text-[#D4AF37]"
-            >
-              <User className="w-4 h-4" />
-            </Link>
-          )}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-slate-800 bg-[#0A192F] px-4 pt-3 pb-6 space-y-3"
-          >
-            <div className="space-y-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60"
-                >
-                  <link.icon className="w-4 h-4 text-[#D4AF37]" />
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="pt-3 border-t border-slate-800 space-y-2">
-              {user ? (
-                <>
-                  <div className="px-3 py-1 text-xs text-slate-400">
-                    Signed in as <span className="font-bold text-white">{user.name}</span>
+                    <DropdownMenuItem className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer">
+                      <Link href="/kyc" className="flex items-center gap-2 w-full">
+                        <FileCheck className="w-4 h-4 text-emerald-500" /> KYC Verification
+                      </Link>
+                    </DropdownMenuItem>
+                    {user.role === "admin" && (
+                      <DropdownMenuItem className="rounded-xl px-3 py-2 text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/30 cursor-pointer">
+                        <Link href="/admin" className="flex items-center gap-2 w-full">
+                          <Crown className="w-4 h-4" /> Admin Console
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                   </div>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem
+                    onClick={() => logout()}
+                    className="rounded-xl px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden md:block bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
+              >
+                Sign In
+              </Link>
+            )}
+
+            {/* Mobile Menu Hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Open mobile menu"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Slide-Out Drawer */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          <div className="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col z-50 animate-in slide-in-from-right duration-300">
+            <div className="flex items-center justify-between pb-6 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-lg font-extrabold text-slate-900 dark:text-white">
+                Royal<span className="text-primary"> Cars</span>
+              </span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-1 py-6 flex-1 overflow-y-auto">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
                   <Link
-                    href="/dashboard"
+                    key={link.label}
+                    href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 bg-slate-900 border border-slate-800"
+                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? "text-primary bg-primary/10 font-bold"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    }`}
                   >
-                    <LayoutDashboard className="w-4 h-4 text-[#D4AF37]" /> My Bookings & Key
+                    {link.label}
                   </Link>
-                  <Link
-                    href="/kyc"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 bg-slate-900 border border-slate-800"
-                  >
-                    <FileCheck className="w-4 h-4 text-emerald-400" /> KYC Verification Center
-                  </Link>
-                  {user.role === "admin" && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30"
-                    >
-                      <Crown className="w-4 h-4 text-amber-400" /> Fleet Admin Console
-                    </Link>
-                  )}
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      logout();
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-rose-300 bg-rose-950/30 border border-rose-900/40"
-                  >
-                    <LogOut className="w-4 h-4 text-rose-400" /> Sign Out
-                  </button>
-                </>
+                );
+              })}
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+              <Link
+                href="/vehicles"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full bg-primary hover:bg-blue-600 text-white py-2.5 rounded-xl font-semibold text-sm text-center shadow-md shadow-primary/20"
+              >
+                Book Now
+              </Link>
+              {user ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="block w-full border border-slate-200 dark:border-slate-700 text-red-600 py-2.5 rounded-xl font-medium text-sm text-center hover:bg-red-50 dark:hover:bg-red-950/20"
+                >
+                  Sign Out
+                </button>
               ) : (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center py-2.5 rounded-xl text-xs font-semibold text-slate-200 bg-slate-900 border border-slate-800"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center py-2.5 rounded-xl text-xs font-bold text-[#0A192F] bg-[#D4AF37]"
-                  >
-                    Register
-                  </Link>
-                </div>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-2.5 rounded-xl font-medium text-sm text-center"
+                >
+                  Sign In
+                </Link>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

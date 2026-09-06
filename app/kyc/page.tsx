@@ -82,7 +82,7 @@ function KYCContent() {
       toast.success(`${type.replace("_", " ").toUpperCase()} uploaded successfully!`);
       loadKYC();
       refreshMe();
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(formatApiError(err));
     } finally {
       setUploadingType(null);
@@ -102,7 +102,7 @@ function KYCContent() {
           </div>
           <h1 className="font-heading text-3xl font-extrabold text-white">Driving License KYC Portal</h1>
           <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-            As a premium self-drive service in Navi Mumbai, we verify all drivers prior to keyless vehicle handover.
+            As a premium car rental service in Kharghar & Panvel, we verify all drivers prior to keyless vehicle handover.
             Our fleet verification team approves valid submissions within 30 minutes.
           </p>
 
@@ -276,7 +276,7 @@ function KYCContent() {
             <ShieldCheck className="w-4 h-4 text-emerald-400" /> Verification Tips
           </div>
           <ul className="space-y-1.5 pl-5 list-disc text-[11px] leading-relaxed">
-            <li>Ensure the Driving License is valid and not expired. Learner permits are not eligible for self-drive.</li>
+            <li>Ensure the Driving License is valid and not expired. Learner permits are not eligible.</li>
             <li>All four corners of the card should be visible with zero glare on the photo or text.</li>
             <li>Once uploaded, you will be notified and your digital keyless handover pass will be armed.</li>
           </ul>

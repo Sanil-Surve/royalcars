@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.pexels.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
+      { protocol: "https", hostname: "pub-6e164401844e42a18bdff5533ec36d1f.r2.dev" },
     ],
   },
 };

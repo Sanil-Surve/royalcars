@@ -52,7 +52,7 @@ export default function RegisterPage() {
             <Crown className="w-6 h-6 fill-current" />
           </div>
           <h1 className="font-heading text-2xl font-bold text-white">Join Royal Cars</h1>
-          <p className="text-xs text-slate-400">Unlock self-drive luxury across Navi Mumbai</p>
+          <p className="text-xs text-slate-400">Unlock premium car rental across Kharghar & Panvel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -147,7 +147,7 @@ export default function DigitalKeyModal({ booking, isOpen, onClose }: DigitalKey
             <div className="mt-4 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-[11px] text-slate-400 flex items-start gap-2 text-left w-full">
               <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
               <span>
-                Self-drive keyless handover: Car immobilizer auto-disarms once your verified Bluetooth pass matches the telematics unit.
+                Keyless vehicle handover: Car immobilizer auto-disarms once your verified Bluetooth pass matches the telematics unit.
               </span>
             </div>
           </TabsContent>

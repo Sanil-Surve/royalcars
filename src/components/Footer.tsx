@@ -2,166 +2,176 @@
 
 import React from "react";
 import Link from "next/link";
-import { Crown, MapPin, PhoneCall, Mail, ShieldCheck, Clock, Building2, Sparkles } from "lucide-react";
+import { Crown, MapPin, Mail, Phone, ArrowRight } from "lucide-react";
 
 export default function Footer() {
+  const areas = [
+    "Kharghar",
+    "Panvel",
+  ];
+
   return (
-    <footer className="w-full bg-[#050C1A] border-t border-slate-800/80 text-slate-400 text-xs">
-      {/* Upper features strip */}
-      <div className="border-b border-slate-800/60 bg-[#0A192F]/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shrink-0">
-              <Sparkles className="w-5 h-5" />
-            </div>
+    <footer className="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm transition-colors">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+        {/* Areas We Serve Section */}
+        <section id="areas-we-serve" className="py-12 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="font-bold text-white text-sm">Self-Drive Convenience</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">Instant booking, doorstep delivery, keyless digital unlock.</p>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Areas we serve
+              </h2>
+              <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                Car rentals across Kharghar and Panvel. Pick your area for local rates and fast doorstep delivery.
+              </p>
             </div>
+            <Link
+              className="text-sm font-semibold text-primary hover:underline underline-offset-4 shrink-0 inline-flex items-center gap-1"
+              href="/vehicles"
+            >
+              Browse the fleet <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-bold text-white text-sm">Local Trust Guaranteed</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">100% sanitized fleet, verified drivers, Kharghar & Panvel hubs.</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-              <Clock className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-bold text-white text-sm">Flexible Pricing Tiers</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">Hourly, daily & monthly subscription passes with tiered savings.</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-              <Building2 className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-bold text-white text-sm">Business Fleet Mode</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">Corporate accounts for SMEs with GST invoicing & priority cars.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="space-y-3 md:col-span-1">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#D4AF37] flex items-center justify-center text-[#0A192F] font-bold">
-              <Crown className="w-5 h-5 fill-current" />
-            </div>
-            <span className="font-heading text-lg font-bold text-white">Royal Cars</span>
-          </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Navi Mumbai’s premier self-drive luxury rental experience. Hand-picked fleet with transparent pricing and zero hidden surge fees.
-          </p>
-          <div className="pt-2 flex items-center gap-3 text-slate-300">
-            <span className="text-[11px] font-mono text-[#D4AF37]">CIN: U50100MH2024PTC394821</span>
-          </div>
-        </div>
-
-        {/* Hub Locations */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-white">Pickup Hubs</h4>
-          <div className="space-y-3 pt-1">
-            <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs font-bold text-slate-200">Kharghar Hub</p>
-                <p className="text-[11px] text-slate-400">Little World Mall, Sector 2, Kharghar, Navi Mumbai</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs font-bold text-slate-200">Panvel Hub</p>
-                <p className="text-[11px] text-slate-400">Orion Mall, Near Station, Panvel, Navi Mumbai</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Fleet & Services */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-white">Services & Fleet</h4>
-          <ul className="space-y-1.5 pt-1">
-            <li>
-              <Link href="/vehicles" className="hover:text-white transition-colors">
-                Browse All Vehicles
-              </Link>
-            </li>
-            <li>
-              <Link href="/vehicles?type=SUV" className="hover:text-white transition-colors">
-                Luxury SUVs (Creta, Innova Crysta)
-              </Link>
-            </li>
-            <li>
-              <Link href="/vehicles?type=Sedan" className="hover:text-white transition-colors">
-                Premium Sedans (Honda City)
-              </Link>
-            </li>
-            <li>
-              <Link href="/business" className="hover:text-white transition-colors">
-                SME Corporate Fleet & GST Invoicing
-              </Link>
-            </li>
-            <li>
-              <Link href="/kyc" className="hover:text-white transition-colors">
-                Online KYC Verification Center
-              </Link>
-            </li>
+          <ul className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3 max-w-xs">
+            {areas.map((area) => (
+              <li key={area}>
+                <Link
+                  className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5"
+                  href={`/vehicles?location=${encodeURIComponent(area)}`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                  {area}
+                </Link>
+              </li>
+            ))}
           </ul>
-        </div>
+        </section>
 
-        {/* 24/7 Hotline Contact */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-white">24/7 Fleet Support</h4>
-          <div className="space-y-2 pt-1 text-slate-300">
-            <div className="flex items-center gap-2">
-              <PhoneCall className="w-4 h-4 text-[#D4AF37]" />
-              <a href="tel:+919820012345" className="hover:text-white transition-colors">
-                +91 98200 12345 (Kharghar)
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <PhoneCall className="w-4 h-4 text-[#D4AF37]" />
-              <a href="tel:+919820054321" className="hover:text-white transition-colors">
-                +91 98200 54321 (Panvel)
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-[#D4AF37]" />
-              <a href="mailto:booking@royalrentalcars.in" className="hover:text-white transition-colors">
-                booking@royalrentalcars.in
-              </a>
-            </div>
-            <p className="text-[11px] text-slate-400 pt-1">
-              Handover hours: 05:00 AM – 11:00 PM Daily
+        {/* 4-Column Directory Grid */}
+        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand Col */}
+          <div className="space-y-4">
+            <Link className="flex items-center gap-2.5" href="/">
+              <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center font-bold shadow-md shadow-primary/20">
+                <Crown className="w-4 h-4 fill-current" />
+              </div>
+              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                Royal<span className="text-primary"> Cars</span>
+              </span>
+            </Link>
+            <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-xs">
+              Premium car rentals in Kharghar and Panvel. Complete freedom on wheels with thoroughly sanitized, insured, and verified vehicles.
             </p>
+            <div className="flex items-center gap-3 pt-1 text-slate-400">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+                Navi Mumbai Hub: Little World Mall, Kharghar
+              </span>
+            </div>
+          </div>
+
+          {/* Company Links */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+              Company
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <Link href="/vehicles" className="hover:text-primary transition-colors">
+                  Our Fleet Catalog
+                </Link>
+              </li>
+              <li>
+                <Link href="/#faq" className="hover:text-primary transition-colors">
+                  Frequently Asked Questions
+                </Link>
+              </li>
+              <li>
+                <Link href="/#location" className="hover:text-primary transition-colors">
+                  Pickup Hubs & Directions
+                </Link>
+              </li>
+              <li>
+                <Link href="/#pricing" className="hover:text-primary transition-colors">
+                  Flexible Rates & Calculator
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal Links */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+              Legal & Policies
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <span className="hover:text-primary transition-colors cursor-pointer">
+                  Privacy Policy
+                </span>
+              </li>
+              <li>
+                <span className="hover:text-primary transition-colors cursor-pointer">
+                  Terms & Conditions
+                </span>
+              </li>
+              <li>
+                <span className="hover:text-primary transition-colors cursor-pointer">
+                  Refund & Cancellation Policy
+                </span>
+              </li>
+              <li>
+                <span className="hover:text-primary transition-colors cursor-pointer">
+                  Security Deposit Guidelines
+                </span>
+              </li>
+              <li>
+                <span className="hover:text-primary transition-colors cursor-pointer">
+                  Vehicle Usage Agreement
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Hub */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+              Contact & Helplines
+            </h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <span>Little World Mall, Sector 2, Kharghar, Navi Mumbai, 410210</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Mail className="w-4 h-4 text-primary shrink-0" />
+                <a href="mailto:support@royalcars.in" className="hover:text-primary transition-colors">
+                  support@royalcars.in
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-primary shrink-0" />
+                <a href="tel:+918369434018" className="hover:text-primary transition-colors font-medium">
+                  +91 83694 34018
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-primary shrink-0" />
+                <a href="tel:+917775044441" className="hover:text-primary transition-colors font-medium">
+                  +91 77750 44441
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
 
-      {/* Bottom copyright & disclaimer */}
-      <div className="border-t border-slate-900 bg-[#030712] py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
-          <div>
-            © {new Date().getFullYear()} Royal Cars Self-Drive Rentals. All rights reserved.
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-slate-400">Doorstep Delivery Available Across Navi Mumbai</span>
-            <span>·</span>
-            <span className="text-slate-400">GST Input Tax Credit Eligible</span>
-          </div>
+        {/* Bottom Bar */}
+        <div className="py-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-400">
+          <p>© {new Date().getFullYear()} Royal Cars Rentals. All rights reserved.</p>
+          <p className="flex items-center gap-2">
+            <span>Kharghar & Panvel</span>
+            <span>•</span>
+            <span>Doorstep Delivery Available</span>
+          </p>
         </div>
       </div>
     </footer>

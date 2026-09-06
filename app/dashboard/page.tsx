@@ -103,7 +103,7 @@ function DashboardContent() {
               Welcome back, {user?.name || "Driver"}
             </h1>
             <p className="text-xs text-slate-400 mt-1">
-              Manage your self-drive bookings, digital keyless passes, and GST tax invoices.
+              Manage your bookings, digital keyless passes, and trip receipts.
             </p>
           </div>
 
@@ -211,7 +211,7 @@ function DashboardContent() {
         {/* Bookings History Tabs */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)}>
+            <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "all" | "active" | "completed")}>
               <TabsList className="bg-slate-900 border border-slate-800 p-1 rounded-2xl h-10">
                 <TabsTrigger value="all" className="text-xs font-bold rounded-xl data-active:bg-[#D4AF37] data-active:text-[#0A192F]">
                   All ({bookings.length})
@@ -237,7 +237,7 @@ function DashboardContent() {
             <div className="p-12 text-center rounded-3xl bg-[#0A192F] border border-slate-800 space-y-3">
               <Car className="w-12 h-12 text-slate-600 mx-auto" />
               <h3 className="font-heading text-lg font-bold text-white">No Bookings Found in this Category</h3>
-              <p className="text-xs text-slate-400">Ready to explore Navi Mumbai? Reserve your premium self-drive car now.</p>
+              <p className="text-xs text-slate-400">Ready to explore? Reserve your premium car in Kharghar or Panvel now.</p>
               <Link
                 href="/vehicles"
                 className="inline-block mt-2 px-5 py-2.5 rounded-xl bg-[#D4AF37] text-[#0A192F] text-xs font-bold uppercase tracking-wider"

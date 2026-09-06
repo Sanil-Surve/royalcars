@@ -79,7 +79,7 @@ function LoginContent() {
             <Crown className="w-6 h-6 fill-current" />
           </div>
           <h1 className="font-heading text-2xl font-bold text-white">Sign In to Royal Cars</h1>
-          <p className="text-xs text-slate-400">Access your self-drive passes and bookings</p>
+          <p className="text-xs text-slate-400">Access your passes and bookings</p>
         </div>
 
         {/* Quick Demo Switcher Buttons */}

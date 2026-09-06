@@ -70,7 +70,7 @@ export async function processRazorpayPayment(
       order_id: initData.order_id,
       amount: initData.amount,
       currency: initData.currency || "INR",
-      name: "Royal Cars Self-Drive",
+      name: "Royal Cars",
       description: `Reservation #${booking.id.slice(0, 8)} · ${paymentType === "partial" ? "20% Advance Token" : paymentType === "full" ? "100% Full Payment" : "Balance Due"}`,
       prefill: initData.prefill || {},
       notes: initData.notes || {},
