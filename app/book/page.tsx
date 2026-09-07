@@ -14,7 +14,6 @@ import {
   Calendar,
   MapPin,
   Truck,
-  ShieldCheck,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
@@ -262,20 +261,20 @@ function BookingWizardContent() {
           booking_id: newBooking.id,
         });
         setCreatedBooking(siteRes.data);
-        setStep(5);
+        setStep(4);
         toast.success("Booking confirmed! Pay at mall hub upon vehicle handover.");
       } else {
         // Razorpay Checkout
         const updated = await processRazorpayPayment(newBooking, paymentOption, (bk) => {
           setCreatedBooking(bk);
-          setStep(5);
+          setStep(4);
         });
         if (updated) {
           setCreatedBooking(updated);
-          setStep(5);
+          setStep(4);
         } else {
           setCreatedBooking(newBooking);
-          setStep(5);
+          setStep(4);
         }
       }
     } catch (err: unknown) {
@@ -300,13 +299,12 @@ function BookingWizardContent() {
         {/* Wizard Progress Indicator */}
         <div className="mb-10">
           <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
-            <span>Step {step} of 5</span>
+            <span>Step {step} of 4</span>
             <span className="text-blue-600 dark:text-blue-400 font-bold">
               {step === 1 && "Vehicle & Schedule"}
               {step === 2 && "Delivery & Handover Mode"}
-              {step === 3 && "Add-ons & Assurances"}
-              {step === 4 && "Review & Payment"}
-              {step === 5 && "Voucher & Keyless Pass"}
+              {step === 3 && "Review & Payment"}
+              {step === 4 && "Voucher & Keyless Pass"}
             </span>
           </div>
 
@@ -314,7 +312,7 @@ function BookingWizardContent() {
             <motion.div
               className="h-full bg-blue-600"
               initial={{ width: "20%" }}
-              animate={{ width: `${(step / 5) * 100}%` }}
+              animate={{ width: `${(step / 4) * 100}%` }}
               transition={{ duration: 0.3 }}
             />
           </div>
@@ -551,61 +549,14 @@ function BookingWizardContent() {
                   onClick={() => setStep(3)}
                   className="rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-blue-700 shadow-md shadow-blue-500/20"
                 >
-                  Continue To Add-ons & Assurances <ArrowRight className="w-4 h-4 ml-1" />
+                  Continue To Review & Pay <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* STEP 3: Add-ons & Trip Assurances */}
-          {step === 3 && (
-            <div className="space-y-6">
-              <div>
-                <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
-                  Trip Add-ons & Assurances
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Complimentary assurances and trip coverage included with your reservation.
-                </p>
-              </div>
-
-              {/* Trip Assurances */}
-              <div className="p-5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 space-y-3 text-xs">
-                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-sm">
-                  <ShieldCheck className="w-5 h-5" /> Included Free of Charge
-                </div>
-                <ul className="space-y-2 text-emerald-800 dark:text-emerald-300/90 pl-6 list-disc">
-                  <li>Zero deposit deduction for standard wear & tear</li>
-                  <li>Fastag automatic toll reconciliation</li>
-                  <li>24/7 Roadside breakdown towing across Mumbai & Pune corridors</li>
-                  <li>Clean, sanitized vehicle with full fuel tank on delivery/pickup</li>
-                </ul>
-              </div>
-
-              <div className="pt-4 flex justify-between items-center">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setStep(2)}
-                  className="rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-1" /> Back
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setStep(4)}
-                  className="rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-blue-700 shadow-md shadow-blue-500/20"
-                >
-                  Review Summary & Pay <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: Review Summary & Payment Option */}
-          {step === 4 && breakdown && (
+          {/* STEP 3: Review Summary & Payment Option */}
+          {step === 3 && breakdown && (
             <div className="space-y-6">
               <div>
                 <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
@@ -723,7 +674,7 @@ function BookingWizardContent() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(2)}
                   className="rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase"
                 >
                   <ArrowLeft className="w-4 h-4 mr-1" /> Back
@@ -732,8 +683,8 @@ function BookingWizardContent() {
             </div>
           )}
 
-          {/* STEP 5: Booking Voucher & Digital Key Confirmation */}
-          {step === 5 && (
+          {/* STEP 4: Booking Voucher & Digital Key Confirmation */}
+          {step === 4 && (
             <div className="text-center space-y-6">
               <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-md shadow-emerald-500/10">
                 <CheckCircle2 className="w-9 h-9" />
