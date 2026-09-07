@@ -39,9 +39,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, notoSerifHeading.variable)}
     >
-      <body className="min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors"
+      >
         <AuthProvider>
           <TooltipProvider>
             <Toaster richColors position="top-right" closeButton />
