@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/src/context/AuthContext";
-import Navbar from "@/src/components/Navbar";
-import Footer from "@/src/components/Footer";
-import ConciergeModal from "@/src/components/ConciergeModal";
+import AppChrome from "@/src/components/AppChrome";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -47,10 +45,7 @@ export default function RootLayout({
         <AuthProvider>
           <TooltipProvider>
             <Toaster richColors position="top-right" closeButton />
-            <Navbar />
-            <main className="flex-1 flex flex-col">{children}</main>
-            <Footer />
-            <ConciergeModal />
+            <AppChrome>{children}</AppChrome>
           </TooltipProvider>
         </AuthProvider>
       </body>
