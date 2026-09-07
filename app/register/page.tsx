@@ -1,43 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { useAuth } from "@/src/context/AuthContext";
-import { Crown, Lock, Mail, User, Phone, ArrowRight, ShieldCheck } from "lucide-react";
+import { Crown, Lock, Mail, User, Phone, ArrowRight, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register } = useAuth();
+  const { user, register } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+
+  // If already logged in, redirect directly to KYC or dashboard
+  useEffect(() => {
+    if (user) {
+      router.replace(user.kyc_status === "approved" ? "/dashboard" : "/kyc");
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting || redirecting) return;
+
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters.");
       return;
     }
 
     setSubmitting(true);
-    const res = await register({ name, email, phone, password });
-    setSubmitting(false);
+    try {
+      const res = await register({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        password,
+      });
 
-    if (res.ok) {
-      toast.success("Account created successfully! Please verify your driving license.");
-      router.push("/kyc");
-    } else {
-      toast.error(res.error || "Registration failed. Please check your details.");
+      if (res.ok) {
+        setRedirecting(true);
+        toast.success("Account created successfully! Please verify your driving license.");
+        const target = "/kyc";
+        router.replace(target);
+        setTimeout(() => {
+          if (typeof window !== "undefined" && window.location.pathname.startsWith("/register")) {
+            window.location.assign(target);
+          }
+        }, 150);
+      } else {
+        setSubmitting(false);
+        toast.error(res.error || "Registration failed. Please check your details.");
+      }
+    } catch {
+      setSubmitting(false);
+      toast.error("An unexpected error occurred during registration.");
     }
   };
+
+  const isLoading = submitting || redirecting;
 
   return (
     <div className="w-full min-h-[calc(100vh-5rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors relative overflow-hidden">
@@ -58,7 +86,7 @@ export default function RegisterPage() {
             Join Royal<span className="text-primary"> Cars</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Unlock premium self-drive car rentals across Kharghar & Panvel
+            Unlock premium self-drive car rentals across Kharghar &amp; Panvel
           </p>
         </div>
 
@@ -72,6 +100,7 @@ export default function RegisterPage() {
               <Input
                 type="text"
                 required
+                disabled={isLoading}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Rohan Sharma"
@@ -89,6 +118,7 @@ export default function RegisterPage() {
               <Input
                 type="email"
                 required
+                disabled={isLoading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="rohan@example.com"
@@ -106,6 +136,7 @@ export default function RegisterPage() {
               <Input
                 type="tel"
                 required
+                disabled={isLoading}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98200 XXXXX"
@@ -124,6 +155,7 @@ export default function RegisterPage() {
                 type="password"
                 required
                 minLength={6}
+                disabled={isLoading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min. 6 characters"
@@ -135,17 +167,29 @@ export default function RegisterPage() {
           <div className="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 text-[11px] text-blue-900 dark:text-blue-300 flex items-start gap-2.5">
             <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
             <span className="leading-relaxed">
-              Your personal data is encrypted & secure. You will be prompted to upload your Driving License for keyless reservation pass activation.
+              Your personal data is encrypted &amp; secure. You will be prompted to upload your Driving License for keyless reservation pass activation.
             </span>
           </div>
 
-          <Button
+          <button
             type="submit"
-            disabled={submitting}
-            className="w-full h-11 bg-primary hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer rounded-xl"
+            disabled={isLoading}
+            className="w-full h-11 bg-primary hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer rounded-xl"
           >
-            {submitting ? "Registering..." : "Create Account & Verify"} <ArrowRight className="w-4 h-4" />
-          </Button>
+            {redirecting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Redirecting to KYC...
+              </>
+            ) : submitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Creating Account...
+              </>
+            ) : (
+              <>
+                Create Account &amp; Verify <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">

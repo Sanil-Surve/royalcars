@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api } from "@/src/lib/api";
+import { api, setStoredToken, removeStoredToken } from "@/src/lib/api";
 import { formatApiError } from "@/src/lib/utils";
 import { User } from "@/src/types";
 
@@ -11,7 +11,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ ok: boolean; user?: User; error?: string }>;
   register: (payload: { email: string; password: string; name: string; phone?: string }) => Promise<{ ok: boolean; user?: User; error?: string }>;
   logout: () => Promise<void>;
-  refreshMe: () => Promise<void>;
+  refreshMe: () => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,12 +20,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshMe = async () => {
+  const refreshMe = async (): Promise<User | null> => {
     try {
       const { data } = await api.get<User>("/auth/me");
       setUser(data);
+      return data;
     } catch {
+      removeStoredToken();
       setUser(null);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -35,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshMe();
 
     const onExpired = () => {
+      removeStoredToken();
       setUser(null);
       if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
         window.location.assign("/login");
@@ -47,7 +51,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const { data } = await api.post<{ user: User }>("/auth/login", { email, password });
+      const { data } = await api.post<{ user: User; access_token?: string }>("/auth/login", { email, password });
+      if (data.access_token) {
+        setStoredToken(data.access_token);
+      }
       setUser(data.user);
       return { ok: true, user: data.user };
     } catch (e: any) {
@@ -57,7 +64,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (payload: { email: string; password: string; name: string; phone?: string }) => {
     try {
-      const { data } = await api.post<{ user: User }>("/auth/register", payload);
+      const { data } = await api.post<{ user: User; access_token?: string }>("/auth/register", payload);
+      if (data.access_token) {
+        setStoredToken(data.access_token);
+      }
       setUser(data.user);
       return { ok: true, user: data.user };
     } catch (e: any) {
@@ -66,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    removeStoredToken();
     try {
       await api.post("/auth/logout");
     } catch {

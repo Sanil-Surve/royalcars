@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { useAuth } from "@/src/context/AuthContext";
-import { Crown, Lock, Mail, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
+import { Crown, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
@@ -30,28 +29,50 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
 
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+
+  // If already logged in, redirect immediately
+  useEffect(() => {
+    if (user) {
+      const target = user.role === "admin" ? "/admin" : redirect;
+      router.replace(target);
+    }
+  }, [user, redirect, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
-    const res = await login(email, password);
-    setSubmitting(false);
+    if (submitting || redirecting) return;
 
-    if (res.ok) {
-      toast.success("Welcome back to Royal Cars!");
-      if (res.user?.role === "admin") {
-        router.push("/admin");
+    setSubmitting(true);
+    try {
+      const res = await login(email.trim(), password);
+
+      if (res.ok) {
+        setRedirecting(true);
+        toast.success("Welcome back to Royal Cars!");
+        const target = res.user?.role === "admin" ? "/admin" : redirect;
+        // Client transition + hard navigation fallback to guarantee single-click navigation
+        router.replace(target);
+        setTimeout(() => {
+          if (typeof window !== "undefined" && window.location.pathname.startsWith("/login")) {
+            window.location.assign(target);
+          }
+        }, 150);
       } else {
-        router.push(redirect);
+        setSubmitting(false);
+        toast.error(res.error || "Invalid email or password.");
       }
-    } else {
-      toast.error(res.error || "Invalid email or password.");
+    } catch {
+      setSubmitting(false);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
+
+  const isLoading = submitting || redirecting;
 
   return (
     <div className="w-full min-h-[calc(100vh-5rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors relative overflow-hidden">
@@ -76,7 +97,6 @@ function LoginContent() {
           </p>
         </div>
 
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
@@ -87,6 +107,7 @@ function LoginContent() {
               <Input
                 type="email"
                 required
+                disabled={isLoading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
@@ -106,6 +127,7 @@ function LoginContent() {
               <Input
                 type="password"
                 required
+                disabled={isLoading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
@@ -114,13 +136,25 @@ function LoginContent() {
             </div>
           </div>
 
-          <Button
+          <button
             type="submit"
-            disabled={submitting}
-            className="w-full h-11 bg-primary hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer rounded-xl"
+            disabled={isLoading}
+            className="w-full h-11 bg-primary hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer rounded-xl"
           >
-            {submitting ? "Signing In..." : "Sign In & Continue"} <ArrowRight className="w-4 h-4" />
-          </Button>
+            {redirecting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Redirecting...
+              </>
+            ) : submitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Signing In...
+              </>
+            ) : (
+              <>
+                Sign In &amp; Continue <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
