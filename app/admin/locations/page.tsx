@@ -164,7 +164,7 @@ export default function AdminLocationsPage() {
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
-        <DialogContent className="sm:max-w-md bg-[#0A192F] border-slate-700 text-slate-100 p-6 space-y-4 shadow-2xl">
+        <DialogContent className="dark sm:max-w-md bg-[#0A192F] border-slate-700 text-slate-100 p-6 space-y-4 shadow-2xl">
           <DialogHeader className="pb-3 border-b border-slate-800">
             <DialogTitle className="font-heading text-base font-bold text-white">
               {editingLoc ? "Edit Hub Location" : "Add Hub Location"}

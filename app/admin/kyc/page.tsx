@@ -205,7 +205,7 @@ export default function AdminKYCPage() {
       {/* Review Modal */}
       <Dialog open={Boolean(reviewingDoc)} onOpenChange={(open) => !open && setReviewingDoc(null)}>
         {reviewingDoc && (
-          <DialogContent className="sm:max-w-md bg-[#0A192F] border-slate-700 text-slate-100 p-6 space-y-4 shadow-2xl">
+          <DialogContent className="dark sm:max-w-md bg-[#0A192F] border-slate-700 text-slate-100 p-6 space-y-4 shadow-2xl">
             <DialogHeader className="pb-3 border-b border-slate-800">
               <DialogTitle className="font-heading text-base font-bold text-white">
                 Verify {reviewingDoc.document_type.replace("_", " ").toUpperCase()}
@@ -282,7 +282,7 @@ export default function AdminKYCPage() {
       {/* Document Image Zoom Preview Modal */}
       <Dialog open={Boolean(selectedPreviewDoc)} onOpenChange={(open) => !open && setSelectedPreviewDoc(null)}>
         {selectedPreviewDoc && (
-          <DialogContent className="sm:max-w-3xl bg-slate-950 border-slate-700 p-3 shadow-2xl">
+          <DialogContent className="dark sm:max-w-3xl bg-slate-950 border-slate-700 p-4 shadow-2xl">
             <DialogHeader className="p-2 border-b border-slate-800">
               <DialogTitle className="text-xs uppercase font-bold text-slate-300">
                 Document Inspection · {selectedPreviewDoc.document_type.replace("_", " ").toUpperCase()}

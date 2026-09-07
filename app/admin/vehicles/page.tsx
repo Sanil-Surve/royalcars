@@ -209,12 +209,12 @@ export default function AdminVehiclesPage() {
             key={v.id}
             className="rounded-2xl bg-[#0A192F] border border-slate-800 hover:border-slate-700 overflow-hidden flex flex-col justify-between shadow-xl"
           >
-            <div className="relative aspect-[16/10] w-full bg-slate-950">
+            <div className="relative aspect-[16/10] w-full bg-gradient-to-b from-slate-900/80 to-slate-950 flex items-center justify-center p-3 border-b border-slate-800/80">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={v.image_urls?.[0] || "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2"}
+                src={v.image_urls?.[0] || "https://pub-6e164401844e42a18bdff5533ec36d1f.r2.dev/vehicles/5f85e3cc-d253-4000-962c-b7f65fd6f6a9.jpg"}
                 alt={v.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
               />
               <div className="absolute top-3 left-3">
                 <Badge variant="outline" className="bg-[#0A192F]/80 text-[#D4AF37] border-[#D4AF37]/30 text-[10px] font-bold">
@@ -280,7 +280,7 @@ export default function AdminVehiclesPage() {
 
       {/* Add / Edit Vehicle Modal */}
       <Dialog open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
-        <DialogContent className="sm:max-w-2xl bg-[#0A192F] border-slate-700 text-slate-100 p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="dark sm:max-w-2xl bg-[#0A192F] border-slate-700 text-slate-100 p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
           <DialogHeader className="pb-3 border-b border-slate-800">
             <DialogTitle className="font-heading text-xl font-bold text-white">
               {editingVehicle ? "Edit Fleet Vehicle" : "Add New Vehicle"}
@@ -386,6 +386,7 @@ export default function AdminVehiclesPage() {
                   onChange={(e) => setLocationId(e.target.value)}
                   className="w-full h-9 rounded-md bg-slate-900 border border-slate-700 px-3 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                 >
+                  <option value="">Select Pickup Hub</option>
                   {locations.map((l) => (
                     <option key={l.id} value={l.id}>{l.name}</option>
                   ))}

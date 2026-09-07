@@ -30,7 +30,6 @@ export default function Navbar() {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Fleet", href: "/vehicles" },
-    { label: "Flexible Pricing", href: "/#pricing" },
     { label: "Location", href: "/#location" },
     { label: "FAQ", href: "/#faq" },
   ];

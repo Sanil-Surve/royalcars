@@ -90,11 +90,6 @@ export default function Footer() {
                   Pickup Hubs & Directions
                 </Link>
               </li>
-              <li>
-                <Link href="/#pricing" className="hover:text-primary transition-colors">
-                  Flexible Rates & Calculator
-                </Link>
-              </li>
             </ul>
           </div>
 

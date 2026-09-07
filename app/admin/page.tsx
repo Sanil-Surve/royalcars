@@ -345,7 +345,7 @@ export default function AdminDashboardPage() {
       {/* START RIDE MODAL with shadcn Dialog */}
       <Dialog open={Boolean(startRideBooking)} onOpenChange={(open) => { if (!open) setStartRideBooking(null); }}>
         {startRideBooking && (
-          <DialogContent className="max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
+          <DialogContent className="dark max-w-lg rounded-3xl bg-[#0A192F] border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
             <DialogHeader className="pb-3 border-b border-slate-800 text-left">
               <DialogTitle className="font-heading text-lg font-bold text-white">Start Ride & Vehicle Handover</DialogTitle>
               <DialogDescription className="text-xs text-slate-400">
@@ -428,7 +428,7 @@ export default function AdminDashboardPage() {
       {/* END RIDE MODAL with shadcn Dialog */}
       <Dialog open={Boolean(endRideBooking)} onOpenChange={(open) => { if (!open) setEndRideBooking(null); }}>
         {endRideBooking && (
-          <DialogContent className="max-w-lg rounded-3xl bg-slate-950 border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
+          <DialogContent className="dark max-w-lg rounded-3xl bg-[#0A192F] border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
             <DialogHeader className="pb-3 border-b border-slate-800 text-left">
               <DialogTitle className="font-heading text-lg font-bold text-white">Process Return & End Ride</DialogTitle>
               <DialogDescription className="text-xs text-slate-400">

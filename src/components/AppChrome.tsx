@@ -17,7 +17,9 @@ export default function AppChrome({ children }: AppChromeProps) {
   return (
     <>
       {!isAdminRoute && <Navbar />}
-      <main className="flex-1 flex flex-col">{children}</main>
+      <main className={`flex-1 flex flex-col ${isAdminRoute ? "dark bg-[#050C1A] text-slate-100" : ""}`}>
+        {children}
+      </main>
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <ConciergeModal />}
     </>

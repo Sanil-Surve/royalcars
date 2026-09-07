@@ -25,7 +25,6 @@ import {
 import { api } from "@/src/lib/api";
 import { Location, Vehicle } from "@/src/types";
 import { formatINR } from "@/src/lib/utils";
-import PricingCalculator from "@/src/components/PricingCalculator";
 
 const POPULAR_VEHICLES: Vehicle[] = [
   {
@@ -594,24 +593,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. FLEXIBLE PRICING CALCULATOR SECTION */}
-      <section id="pricing" className="py-16 md:py-20 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
-              <Sparkles className="w-3.5 h-3.5" /> Transparent Rates
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Instant Rental Rate Calculator
-            </h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              Calculate exact rental costs across hourly, daily, and weekly durations with zero hidden surprises.
-            </p>
-          </div>
-
-          <PricingCalculator vehicles={vehicles} />
-        </div>
-      </section>
 
       {/* 6. SOCIAL PROOF & CUSTOMER TESTIMONIALS */}
       <section className="py-16 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
