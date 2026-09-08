@@ -445,9 +445,8 @@ export default function HomePage() {
 
           <div className="relative mt-6">
             <div
-              className={`space-y-4 text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300 transition-all ${
-                !seoExpanded ? "max-h-48 overflow-hidden" : ""
-              }`}
+              className={`space-y-4 text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300 transition-all ${!seoExpanded ? "max-h-48 overflow-hidden" : ""
+                }`}
             >
               <p>
                 Looking for a reliable car rental service in Kharghar & Panvel? Royal Cars offers a wide range of impeccably maintained vehicles designed to make your travel experience comfortable, convenient, and affordable. Whether you need a vehicle for daily commuting, a family outing, or a weekend getaway to Lonavala, Mahabaleshwar, or Goa, our rental cars provide the flexibility and freedom to travel at your own rhythm.
@@ -692,15 +691,13 @@ export default function HomePage() {
                       className="w-full flex items-start justify-between gap-4 text-left group focus:outline-none cursor-pointer"
                       aria-expanded={isOpen}
                     >
-                      <span className={`text-sm sm:text-base font-semibold transition-colors ${
-                        isOpen ? "text-primary font-bold" : "text-slate-900 dark:text-white group-hover:text-primary"
-                      }`}>
+                      <span className={`text-sm sm:text-base font-semibold transition-colors ${isOpen ? "text-primary font-bold" : "text-slate-900 dark:text-white group-hover:text-primary"
+                        }`}>
                         {item.q}
                       </span>
                       <ChevronDown
-                        className={`w-5 h-5 shrink-0 text-slate-400 transition-transform duration-300 mt-0.5 ${
-                          isOpen ? "rotate-180 text-primary" : ""
-                        }`}
+                        className={`w-5 h-5 shrink-0 text-slate-400 transition-transform duration-300 mt-0.5 ${isOpen ? "rotate-180 text-primary" : ""
+                          }`}
                       />
                     </button>
 
@@ -748,10 +745,7 @@ export default function HomePage() {
                   </dt>
                   <dd className="mt-1 text-sm text-slate-700 dark:text-slate-300 space-y-1">
                     <a href="tel:+918369434018" className="block hover:text-primary transition-colors font-bold">
-                      +91 83694 34018 (Direct)
-                    </a>
-                    <a href="tel:+917775044441" className="block hover:text-primary transition-colors font-bold">
-                      +91 77750 44441 (Support)
+                      +91 9892805777
                     </a>
                   </dd>
                 </div>
