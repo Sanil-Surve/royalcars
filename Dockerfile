@@ -14,7 +14,7 @@
     RUN bun run build                                                                                                                              
                                                                                                                                                    
     # 3. Production runner (lightweight node image)                                                                                                
-    FROM node:20-alpine AS runner                                                                                                                  
+    FROM node:24-alpine AS runner                                                                                                                  
     WORKDIR /app                                                                                                                                   
                                                                                                                                                    
     ENV NODE_ENV=production                                                                                                                        
