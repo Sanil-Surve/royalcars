@@ -9,6 +9,8 @@
     WORKDIR /app                                                                                                                                   
     COPY --from=deps /app/node_modules ./node_modules                                                                                              
     COPY . .                                                                                                                                       
+    ARG BACKEND_INTERNAL_URL="https://api.royalrentalcars.in"                                                                                      
+    ENV BACKEND_INTERNAL_URL=$BACKEND_INTERNAL_URL                                                                                                 
     ENV NEXT_TELEMETRY_DISABLED=1                                                                                                                  
     ENV NODE_ENV=production                                                                                                                        
     RUN bun run build                                                                                                                              

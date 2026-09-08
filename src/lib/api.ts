@@ -1,8 +1,8 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 // When accessed from browser, /api proxies to backend via next.config.ts rewrites
-// When accessed server-side, it uses BACKEND_INTERNAL_URL or localhost:8000
-const API_BASE = typeof window !== "undefined" ? "/api" : (process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000") + "/api";
+// When accessed server-side, it uses BACKEND_INTERNAL_URL or production backend
+const API_BASE = typeof window !== "undefined" ? "/api" : (process.env.BACKEND_INTERNAL_URL || "https://api.royalrentalcars.in") + "/api";
 
 export const TOKEN_KEY = "royalcars_access_token";
 
