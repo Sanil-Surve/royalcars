@@ -136,10 +136,10 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-white">Operations & Rides Console</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Operations & Rides Console</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Real-time fleet utilization, active handover dispatches, and return check-ins.
           </p>
         </div>
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
           variant="outline"
           size="sm"
           onClick={loadData}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 border-slate-700 text-xs font-semibold text-slate-200 hover:text-white"
+          className="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh Live Data
         </Button>
@@ -156,57 +156,57 @@ export default function AdminDashboardPage() {
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+        <Card className="p-5 rounded-2xl bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
           <CardContent className="p-0 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Total Revenue</span>
-              <DollarSign className="w-4 h-4 text-[#D4AF37]" />
+              <DollarSign className="w-4 h-4 text-primary" />
             </div>
-            <p className="font-heading text-2xl font-bold text-white">
+            <p className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
               {formatINR(metrics?.revenue || 0)}
             </p>
-            <span className="text-[10px] text-slate-500">Collected via Razorpay & Hub</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">Collected via Razorpay & Hub</span>
           </CardContent>
         </Card>
 
-        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+        <Card className="p-5 rounded-2xl bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
           <CardContent className="p-0 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Active Dispatches</span>
-              <Car className="w-4 h-4 text-emerald-400" />
+              <Car className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <p className="font-heading text-2xl font-bold text-emerald-400">
-              {activeRides.length} <span className="text-xs text-slate-400 font-sans font-normal">on road</span>
+            <p className="font-heading text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              {activeRides.length} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">on road</span>
             </p>
-            <span className="text-[10px] text-slate-500">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">
               {metrics?.fleet_utilization || 0}% Fleet Utilization
             </span>
           </CardContent>
         </Card>
 
-        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+        <Card className="p-5 rounded-2xl bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
           <CardContent className="p-0 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Pending KYC Queue</span>
-              <FileCheck className="w-4 h-4 text-amber-400" />
+              <FileCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             </div>
-            <p className="font-heading text-2xl font-bold text-amber-400">
+            <p className="font-heading text-2xl font-bold text-amber-600 dark:text-amber-400">
               {metrics?.pending_kyc || 0}
             </p>
-            <span className="text-[10px] text-slate-500">Awaiting verification review</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">Awaiting verification review</span>
           </CardContent>
         </Card>
 
-        <Card className="p-5 rounded-2xl bg-[#0A192F] border-slate-800 space-y-2">
+        <Card className="p-5 rounded-2xl bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
           <CardContent className="p-0 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Pending Balances</span>
-              <Clock className="w-4 h-4 text-cyan-400" />
+              <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
-            <p className="font-heading text-2xl font-bold text-white">
+            <p className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
               {formatINR(metrics?.pending_balance || 0)}
             </p>
-            <span className="text-[10px] text-slate-500">Collect at physical handover</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">Collect at physical handover</span>
           </CardContent>
         </Card>
       </div>
@@ -215,15 +215,15 @@ export default function AdminDashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-heading text-lg font-bold text-white flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Ready for Handover ({confirmedRides.length})
+            <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Ready for Handover ({confirmedRides.length})
             </h2>
-            <p className="text-xs text-slate-400">Confirmed customer reservations ready for vehicle dispatch.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Confirmed customer reservations ready for vehicle dispatch.</p>
           </div>
         </div>
 
         {confirmedRides.length === 0 ? (
-          <div className="p-8 rounded-2xl bg-[#0A192F] border border-slate-800 text-center text-xs text-slate-400">
+          <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400 shadow-xs">
             No confirmed bookings waiting for handover at this moment.
           </div>
         ) : (
@@ -231,39 +231,39 @@ export default function AdminDashboardPage() {
             {confirmedRides.map((b) => (
               <div
                 key={b.id}
-                className="p-5 rounded-2xl bg-[#0A192F] border border-slate-800 hover:border-slate-700 transition-colors space-y-3"
+                className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors space-y-3 shadow-xs"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-white text-sm">{b.vehicle_name}</h3>
-                    <p className="text-[11px] text-slate-400">
-                      Customer: <span className="text-white font-medium">{b.customer_name || "Driver"}</span> ({b.customer_phone || "—"})
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">{b.vehicle_name}</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Customer: <span className="text-slate-900 dark:text-white font-medium">{b.customer_name || "Driver"}</span> ({b.customer_phone || "—"})
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-xs font-bold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border-[#D4AF37]/30">
+                  <Badge variant="outline" className="text-xs font-bold text-primary px-2.5 py-0.5 rounded-full bg-primary/10 border-primary/20">
                     #{b.id.slice(0, 8)}
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300">
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block">Pickup Scheduled</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase block">Pickup Scheduled</span>
                     <span>{b.pickup_date} at {b.pickup_time}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block">Balance to Collect</span>
-                    <span className="font-bold text-amber-400">{formatINR(b.balance_amount)}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase block">Balance to Collect</span>
+                    <span className="font-bold text-amber-600 dark:text-amber-400">{formatINR(b.balance_amount)}</span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-800 flex justify-end">
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                   <Button
                     size="sm"
                     onClick={() => {
                       setStartRideBooking(b);
                       setStartOdo(15000);
                     }}
-                    className="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow"
+                    className="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" /> Initiate Handover / Start Ride
                   </Button>
@@ -278,15 +278,15 @@ export default function AdminDashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-heading text-lg font-bold text-white flex items-center gap-2">
+            <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" /> Live Active Rides ({activeRides.length})
             </h2>
-            <p className="text-xs text-slate-400">Cars currently on the road with customers.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Cars currently on the road with customers.</p>
           </div>
         </div>
 
         {activeRides.length === 0 ? (
-          <div className="p-8 rounded-2xl bg-[#0A192F] border border-slate-800 text-center text-xs text-slate-400">
+          <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400 shadow-xs">
             No active rides on the road right now.
           </div>
         ) : (
@@ -294,36 +294,36 @@ export default function AdminDashboardPage() {
             {activeRides.map((b) => (
               <div
                 key={b.id}
-                className="p-5 rounded-2xl bg-gradient-to-br from-[#0A192F] to-[#07172b] border border-emerald-500/40 space-y-3 shadow-lg"
+                className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-500/30 space-y-3 shadow-xs"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-white text-sm">{b.vehicle_name}</h3>
-                    <p className="text-[11px] text-slate-400">
-                      Driver: <span className="text-white font-medium">{b.customer_name || "Customer"}</span> ({b.customer_phone || "—"})
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">{b.vehicle_name}</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Driver: <span className="text-slate-900 dark:text-white font-medium">{b.customer_name || "Customer"}</span> ({b.customer_phone || "—"})
                     </p>
                   </div>
-                  <Badge variant="secondary" className="text-xs font-bold text-emerald-400 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border-emerald-500/30">
+                  <Badge variant="outline" className="text-xs font-bold text-emerald-700 dark:text-emerald-400 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800">
                     Active
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-xs text-slate-300">
+                <div className="grid grid-cols-3 gap-2 text-xs text-slate-600 dark:text-slate-300">
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block">Start Odo</span>
-                    <span className="font-mono font-bold text-white">{b.odometer_start || 0} km</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase block">Start Odo</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">{b.odometer_start || 0} km</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block">Start Fuel</span>
-                    <span className="font-bold text-white">{b.fuel_level_start || "Full"}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase block">Start Fuel</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{b.fuel_level_start || "Full"}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase block">Return Due</span>
-                    <span className="font-bold text-white">{b.dropoff_date} ({b.dropoff_time})</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase block">Return Due</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{b.dropoff_date} ({b.dropoff_time})</span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-800 flex justify-end">
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                   <Button
                     size="sm"
                     onClick={() => {
@@ -331,7 +331,7 @@ export default function AdminDashboardPage() {
                       setEndOdo((b.odometer_start || 15000) + 120);
                       setExtraCharges(0);
                     }}
-                    className="rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-[#0A192F] font-bold text-xs flex items-center gap-1.5 shadow"
+                    className="rounded-xl bg-primary hover:bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
                   >
                     <Square className="w-3.5 h-3.5 fill-current" /> Process Return / End Ride
                   </Button>
@@ -345,10 +345,10 @@ export default function AdminDashboardPage() {
       {/* START RIDE MODAL with shadcn Dialog */}
       <Dialog open={Boolean(startRideBooking)} onOpenChange={(open) => { if (!open) setStartRideBooking(null); }}>
         {startRideBooking && (
-          <DialogContent className="dark max-w-lg rounded-3xl bg-[#0A192F] border border-slate-700 p-6 sm:p-8 space-y-4 text-slate-100 shadow-2xl">
-            <DialogHeader className="pb-3 border-b border-slate-800 text-left">
-              <DialogTitle className="font-heading text-lg font-bold text-white">Start Ride & Vehicle Handover</DialogTitle>
-              <DialogDescription className="text-xs text-slate-400">
+          <DialogContent className="sm:max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-4 text-slate-900 dark:text-slate-100 shadow-xl">
+            <DialogHeader className="pb-3 border-b border-slate-200 dark:border-slate-800 text-left">
+              <DialogTitle className="font-heading text-lg font-bold text-slate-900 dark:text-white">Start Ride & Vehicle Handover</DialogTitle>
+              <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
                 {startRideBooking.vehicle_name} · #{startRideBooking.id.slice(0, 8)}
               </DialogDescription>
             </DialogHeader>
